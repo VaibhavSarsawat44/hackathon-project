@@ -16,7 +16,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip';
+  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips' || location.pathname === '/profile';
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
@@ -32,6 +32,7 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Home</Link>
             <a href="#features" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Features</a>
             <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Dashboard</Link>
+            <Link to="/my-trips" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">My Trips</Link>
             
             <div className="flex items-center space-x-4 ml-4 border-l border-gray-200 pl-4">
               {!isAuthRoute ? (
@@ -42,9 +43,9 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm">
+                <Link to="/profile" className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm block">
                   <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
-                </div>
+                </Link>
               )}
             </div>
           </div>
@@ -70,6 +71,7 @@ const Navbar = () => {
               <Link to="/" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Home</Link>
               <a href="#features" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Features</a>
               <Link to="/dashboard" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Dashboard</Link>
+              <Link to="/my-trips" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">My Trips</Link>
               <div className="h-px bg-gray-200 my-2"></div>
               {!isAuthRoute ? (
                 <>
@@ -79,12 +81,12 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="flex items-center space-x-3 px-3 py-3">
+                <Link to="/profile" className="flex items-center space-x-3 px-3 py-3">
                   <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden shadow-sm">
                     <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
                   </div>
                   <span className="font-medium text-gray-700">My Profile</span>
-                </div>
+                </Link>
               )}
             </div>
           </motion.div>

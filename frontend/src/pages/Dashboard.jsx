@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar } from 'lucide-react';
 
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,17 +23,17 @@ const Dashboard = () => {
   };
 
   const personalSelections = [
-    { id: 1, title: 'Mountain Escapes', image: 'https://picsum.photos/seed/mountain/500/500' },
-    { id: 2, title: 'Beach Resorts', image: 'https://picsum.photos/seed/beach/500/500' },
-    { id: 3, title: 'City Tours', image: 'https://picsum.photos/seed/city/500/500' },
-    { id: 4, title: 'Camping', image: 'https://picsum.photos/seed/camping/500/500' },
-    { id: 5, title: 'Road Trips', image: 'https://picsum.photos/seed/roadtrip/500/500' },
+    { id: 1, title: 'Mountain Escapes', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, title: 'Beach Resorts', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&auto=format&fit=crop&q=80' },
+    { id: 3, title: 'City Tours', image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=500&auto=format&fit=crop&q=80' },
+    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=500&auto=format&fit=crop&q=80' },
+    { id: 5, title: 'Road Trips', image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=80' },
   ];
 
   const previousTrips = [
-    { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://picsum.photos/seed/kyoto/500/800' },
-    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://picsum.photos/seed/santorini/500/800' },
-    { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://picsum.photos/seed/alps/500/800' },
+    { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=500&auto=format&fit=crop&q=80' },
+    { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=500&auto=format&fit=crop&q=80' },
   ];
 
   return (
@@ -56,7 +55,7 @@ const Dashboard = () => {
           className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden mb-8 group shadow-2xl border border-gray-800"
         >
           <img 
-            src="https://picsum.photos/seed/travelbanner/1200/400" 
+            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
             alt="Banner" 
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
           />
@@ -79,18 +78,14 @@ const Dashboard = () => {
           transition={{ delay: 0.2 }}
           className="flex flex-col md:flex-row gap-4 mb-12"
         >
-          <div className="flex-1 relative group">
+          <Link to="/search" className="flex-1 relative group block">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-500 group-focus-within:text-primary-500 transition-colors" />
+              <Search className="h-5 w-5 text-gray-500 group-hover:text-primary-500 transition-colors" />
             </div>
-            <input
-              type="text"
-              placeholder="Search destinations, trips, or activities..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all shadow-inner"
-            />
-          </div>
+            <div className="w-full bg-gray-900/80 border border-gray-700 text-gray-500 rounded-2xl pl-12 pr-4 py-3.5 hover:border-primary-500 transition-all shadow-inner cursor-pointer">
+              Search destinations, trips, or activities...
+            </div>
+          </Link>
           <div className="flex gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
               <Grid className="w-4 h-4 mr-2" /> Group by

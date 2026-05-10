@@ -32,12 +32,12 @@ const CreateTrip = () => {
   };
 
   const suggestions = [
-    { id: 1, title: 'Eiffel Tower', location: 'Paris, France', rating: 4.9, image: 'https://picsum.photos/seed/paris/500/800' },
-    { id: 2, title: 'Colosseum', location: 'Rome, Italy', rating: 4.8, image: 'https://picsum.photos/seed/rome/500/800' },
-    { id: 3, title: 'Fuji Mountain', location: 'Honshu, Japan', rating: 4.9, image: 'https://picsum.photos/seed/fuji/500/800' },
-    { id: 4, title: 'Grand Canyon', location: 'Arizona, USA', rating: 4.8, image: 'https://picsum.photos/seed/canyon/500/800' },
-    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://picsum.photos/seed/santorini/500/800' },
-    { id: 6, title: 'Machu Picchu', location: 'Cusco Region, Peru', rating: 4.9, image: 'https://picsum.photos/seed/peru/500/800' },
+    { id: 1, title: 'Eiffel Tower', location: 'Paris, France', rating: 4.9, image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, title: 'Colosseum', location: 'Rome, Italy', rating: 4.8, image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=500&auto=format&fit=crop&q=80' },
+    { id: 3, title: 'Fuji Mountain', location: 'Honshu, Japan', rating: 4.9, image: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=500&auto=format&fit=crop&q=80' },
+    { id: 4, title: 'Grand Canyon', location: 'Arizona, USA', rating: 4.8, image: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=500&auto=format&fit=crop&q=80' },
+    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=500&auto=format&fit=crop&q=80' },
+    { id: 6, title: 'Machu Picchu', location: 'Cusco Region, Peru', rating: 4.9, image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=500&auto=format&fit=crop&q=80' },
   ];
 
   return (
@@ -163,14 +163,30 @@ const CreateTrip = () => {
                     </p>
                     
                     {/* Hover reveal button */}
-                    <button className="mt-6 w-full flex items-center justify-center py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+                    <Link to="/build-itinerary" className="mt-6 w-full flex items-center justify-center py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
                       Add to Itinerary <ArrowRight className="w-4 h-4 ml-2" />
-                    </button>
+                    </Link>
                   </div>
                 </motion.div>
               ))}
             </div>
           </motion.div>
+
+        {/* Floating Action Button to continue */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+          className="fixed bottom-8 right-8 z-50"
+        >
+          <Link 
+            to="/build-itinerary"
+            className="bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-8 py-4 rounded-full font-bold shadow-[0_10px_40px_rgba(79,70,229,0.5)] border border-white/10 flex items-center group transition-all transform hover:scale-105 active:scale-95"
+          >
+            Build Itinerary
+            <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-2 duration-300" />
+          </Link>
+        </motion.div>
 
         </motion.div>
       </div>
