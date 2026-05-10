@@ -1,124 +1,196 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Compass, Calendar, MapPin, Settings, User, Bell } from 'lucide-react';
+import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar } from 'lucide-react';
 
 const Dashboard = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
+  const personalSelections = [
+    { id: 1, title: 'Mountain Escapes', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=60' },
+    { id: 2, title: 'Beach Resorts', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&auto=format&fit=crop&q=60' },
+    { id: 3, title: 'City Tours', image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=500&auto=format&fit=crop&q=60' },
+    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1504280390224-69634e02927d?w=500&auto=format&fit=crop&q=60' },
+    { id: 5, title: 'Road Trips', image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=60' },
+  ];
+
+  const previousTrips = [
+    { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=60' },
+    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac542?w=500&auto=format&fit=crop&q=60' },
+    { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=500&auto=format&fit=crop&q=60' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-gray-100">
-          <span className="text-xl font-bold text-gradient">Traveloop</span>
-        </div>
-        <div className="p-4 flex-1">
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="flex items-center px-4 py-3 bg-primary-50 text-primary-600 rounded-xl font-medium">
-                <Compass className="mr-3" size={20} />
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
-                <Calendar className="mr-3" size={20} />
-                My Trips
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
-                <MapPin className="mr-3" size={20} />
-                Saved Places
-              </a>
-            </li>
-            <div className="pt-8 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Account</div>
-            <li>
-              <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
-                <User className="mr-3" size={20} />
-                Profile
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
-                <Settings className="mr-3" size={20} />
-                Settings
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+    <div className="min-h-screen bg-gray-950 text-white pb-24 font-sans">
+      
+      {/* Subtle Background Glows */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sm:px-8">
-          <h1 className="text-xl font-semibold text-gray-800">Overview</h1>
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-400 hover:text-gray-600 transition-colors">
-              <Bell size={20} />
-            </button>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-primary-500 to-indigo-500 border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-xs">
-              JD
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        {/* Top Header matching wireframe (Optional if Navbar is global, but wireframe shows it integrated) */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4"
+        >
+          <h1 className="text-2xl font-bold tracking-wider">Traveloop</h1>
+          <div className="w-10 h-10 rounded-full border-2 border-gray-700 bg-gray-800 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors">
+            <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
           </div>
-        </header>
+        </motion.div>
 
-        <div className="p-6 sm:p-8 flex-1 overflow-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
-          >
-            {/* Dashboard Cards */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
-              <span className="text-gray-500 text-sm font-medium mb-1">Upcoming Trips</span>
-              <span className="text-3xl font-bold text-gray-900 mb-4">2</span>
-              <div className="mt-auto pt-4 border-t border-gray-50 flex items-center text-sm text-primary-600 font-medium">
-                <span>View itineraries</span>
-              </div>
+        {/* Banner Image */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden mb-8 group shadow-2xl border border-gray-800"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
+            alt="Banner" 
+            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-gray-900/40 to-transparent flex items-center justify-center">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-lg"
+            >
+              Explore The Unknown
+            </motion.h2>
+          </div>
+        </motion.div>
+
+        {/* Search & Filter Bar */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col md:flex-row gap-4 mb-12"
+        >
+          <div className="flex-1 relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-500 group-focus-within:text-primary-500 transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search destinations, trips, or activities..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all shadow-inner"
+            />
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+            <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
+              <Grid className="w-4 h-4 mr-2" /> Group by
+            </button>
+            <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
+              <Filter className="w-4 h-4 mr-2" /> Filter
+            </button>
+            <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
+              <SortDesc className="w-4 h-4 mr-2" /> Sort by...
+            </button>
+          </div>
+        </motion.div>
+
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          
+          {/* Personal Selections */}
+          <div className="mb-12">
+            <div className="flex items-center mb-6">
+              <h3 className="text-2xl font-semibold text-white mr-4">Personal Selections</h3>
+              <div className="h-px bg-gray-800 flex-grow"></div>
             </div>
             
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
-              <span className="text-gray-500 text-sm font-medium mb-1">Places Visited</span>
-              <span className="text-3xl font-bold text-gray-900 mb-4">14</span>
-              <div className="mt-auto pt-4 border-t border-gray-50 flex items-center text-sm text-gray-500">
-                <span>Last visited: Kyoto, Japan</span>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {personalSelections.map((item) => (
+                <motion.div 
+                  key={item.id}
+                  variants={itemVariants}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="relative aspect-square rounded-2xl overflow-hidden cursor-pointer group border border-gray-800 shadow-lg"
+                >
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="text-white font-medium text-sm md:text-base leading-tight drop-shadow-md">{item.title}</p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
+          </div>
 
-            <div className="bg-gradient-to-br from-primary-600 to-indigo-700 p-6 rounded-2xl shadow-md text-white flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full opacity-10 -mr-10 -mt-10"></div>
-              <span className="text-primary-100 text-sm font-medium mb-1 relative z-10">Traveloop Pro</span>
-              <span className="text-2xl font-bold mb-4 relative z-10">Unlock premium features</span>
-              <button className="mt-auto bg-white text-primary-700 py-2 rounded-xl font-medium text-sm w-max px-4 hover:bg-gray-50 transition-colors relative z-10">
-                Upgrade Now
-              </button>
+          {/* Previous Trips */}
+          <div className="mb-12 relative">
+            <div className="flex items-center mb-6">
+              <h3 className="text-2xl font-semibold text-white mr-4">Previous Trips</h3>
+              <div className="h-px bg-gray-800 flex-grow"></div>
             </div>
-          </motion.div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {previousTrips.map((trip) => (
+                <motion.div 
+                  key={trip.id}
+                  variants={itemVariants}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="relative h-80 rounded-3xl overflow-hidden cursor-pointer group border border-gray-800 shadow-xl"
+                >
+                  <img src={trip.image} alt={trip.location} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/40 to-transparent opacity-90 transition-opacity"></div>
+                  
+                  <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center">
+                    <Calendar className="w-3.5 h-3.5 text-gray-300 mr-1.5" />
+                    <span className="text-xs text-gray-200 font-medium">{trip.date}</span>
+                  </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6"
-          >
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Recent Activity</h2>
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                <Compass className="text-gray-400" size={28} />
-              </div>
-              <h3 className="text-gray-900 font-medium mb-1">No recent trips</h3>
-              <p className="text-gray-500 text-sm max-w-sm">When you book or plan a trip, your itinerary and updates will appear here.</p>
-              <button className="mt-6 bg-primary-600 text-white px-5 py-2 rounded-xl font-medium hover:bg-primary-700 transition-colors">
-                Plan a New Trip
-              </button>
+                  <div className="absolute bottom-6 left-6 right-6 transform transition-transform duration-300 group-hover:-translate-y-2">
+                    <div className="flex items-center mb-2">
+                      <MapPin className="text-primary-400 w-4 h-4 mr-1.5" />
+                      <p className="text-primary-300 text-sm font-medium uppercase tracking-wider">Visited</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-white drop-shadow-md">{trip.location}</h4>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </motion.div>
-        </div>
-      </main>
+          </div>
+
+        </motion.div>
+
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="fixed bottom-8 right-8 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-6 py-4 rounded-full font-bold shadow-[0_10px_40px_rgba(79,70,229,0.5)] border border-white/10 flex items-center group z-50 transition-all"
+        >
+          <Plus className="w-6 h-6 mr-2 transition-transform group-hover:rotate-90 duration-300" />
+          Plan a trip
+        </motion.button>
+        
+      </div>
     </div>
   );
 };
