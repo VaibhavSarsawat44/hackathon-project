@@ -111,13 +111,21 @@ const UserProfile = () => {
               <div className="flex-grow text-center md:text-left">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
                   <h1 className="text-3xl font-bold text-white">{userData.name}</h1>
-                  <button 
-                    onClick={() => setIsEditing(!isEditing)}
-                    className={`self-center md:self-auto px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${isEditing ? 'bg-primary-600 border-primary-500 text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'}`}
-                  >
-                    <Edit3 className="w-3.5 h-3.5 inline mr-1.5" />
-                    {isEditing ? 'Save Changes' : 'Edit Profile'}
-                  </button>
+                  <div className="flex gap-3 self-center md:self-auto">
+                    <button 
+                      onClick={() => setIsEditing(!isEditing)}
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${isEditing ? 'bg-primary-600 border-primary-500 text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'}`}
+                    >
+                      <Edit3 className="w-3.5 h-3.5 inline mr-1.5" />
+                      {isEditing ? 'Save Changes' : 'Edit Profile'}
+                    </button>
+                    <Link 
+                      to="/login"
+                      className="px-4 py-1.5 rounded-full text-sm font-medium border bg-transparent border-red-500/50 text-red-400 hover:bg-red-500/10 hover:border-red-500 hover:text-red-300 transition-all flex items-center"
+                    >
+                      Log out
+                    </Link>
+                  </div>
                 </div>
 
                 <p className="text-gray-400 mb-5 max-w-xl leading-relaxed">{userData.bio}</p>

@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -47,9 +48,41 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <Link to="/profile" className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm block">
-                  <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
-                </Link>
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm block focus:outline-none"
+                  >
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden py-1 z-50"
+                      >
+                        <Link 
+                          to="/profile" 
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                        >
+                          Account
+                        </Link>
+                        <Link 
+                          to="/login" 
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="block px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Log out
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               )}
             </div>
           </div>
@@ -89,12 +122,15 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <Link to="/profile" className="flex items-center space-x-3 px-3 py-3">
-                  <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden shadow-sm">
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
-                  </div>
-                  <span className="font-medium text-gray-700">My Profile</span>
-                </Link>
+                <>
+                  <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center space-x-3 px-3 py-3 hover:bg-primary-50 rounded-lg transition-colors">
+                    <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden shadow-sm">
+                      <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="font-medium text-gray-700">Account</span>
+                  </Link>
+                  <Link to="/login" onClick={() => setIsOpen(false)} className="block px-3 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">Log out</Link>
+                </>
               )}
             </div>
           </motion.div>
