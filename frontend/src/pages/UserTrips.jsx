@@ -89,68 +89,70 @@ const UserTrips = () => {
         whileHover={{ y: -5, scale: 1.01 }}
         className="relative overflow-hidden rounded-[2rem] bg-gray-900/60 backdrop-blur-xl border border-gray-800 shadow-xl group cursor-pointer"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-        
-        <div className="flex flex-col md:flex-row h-full">
-          {/* Trip Image */}
-          <div className="md:w-2/5 h-48 md:h-auto relative overflow-hidden">
-            <img 
-              src={trip.image} 
-              alt={trip.title} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-gray-950 via-gray-900/40 to-transparent"></div>
-            
-            <div className="absolute top-4 left-4">
-              <div className={`px-3 py-1.5 rounded-full border flex items-center backdrop-blur-md shadow-lg ${badgeColor}`}>
-                <Icon className="w-3.5 h-3.5 mr-1.5" />
-                <span className="text-xs font-bold uppercase tracking-wider">{type}</span>
+        <Link to="/itinerary">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+          
+          <div className="flex flex-col md:flex-row h-full">
+            {/* Trip Image */}
+            <div className="md:w-2/5 h-48 md:h-auto relative overflow-hidden">
+              <img 
+                src={trip.image} 
+                alt={trip.title} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-gray-950 via-gray-900/40 to-transparent"></div>
+              
+              <div className="absolute top-4 left-4">
+                <div className={`px-3 py-1.5 rounded-full border flex items-center backdrop-blur-md shadow-lg ${badgeColor}`}>
+                  <Icon className="w-3.5 h-3.5 mr-1.5" />
+                  <span className="text-xs font-bold uppercase tracking-wider">{type}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Trip Details */}
+            <div className="p-6 md:p-8 md:w-3/5 flex flex-col justify-center relative z-10">
+              <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">{trip.title}</h3>
+              
+              <div className="flex flex-col space-y-2 mb-6">
+                <div className="flex items-center text-gray-400">
+                  <MapPin className="w-4 h-4 mr-2 text-indigo-400" />
+                  <span>{trip.location}</span>
+                </div>
+                <div className="flex items-center text-gray-400">
+                  <Calendar className="w-4 h-4 mr-2 text-primary-400" />
+                  <span>{trip.dateRange}</span>
+                </div>
+              </div>
+
+              {type === 'ongoing' && (
+                <div className="mt-auto">
+                  <div className="flex justify-between text-xs text-gray-400 mb-2">
+                    <span>Trip Progress</span>
+                    <span>{trip.progress}%</span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-primary-500 to-indigo-500" style={{ width: `${trip.progress}%` }}></div>
+                  </div>
+                </div>
+              )}
+
+              {type === 'upcoming' && (
+                <div className="mt-auto">
+                  <p className="text-amber-400/90 font-medium text-sm flex items-center">
+                    <Clock className="w-4 h-4 mr-1.5" /> {trip.daysLeft} days left until departure
+                  </p>
+                </div>
+              )}
+
+              <div className="absolute bottom-6 right-6 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
+                  <ArrowRight className="w-5 h-5" />
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Trip Details */}
-          <div className="p-6 md:p-8 md:w-3/5 flex flex-col justify-center relative z-10">
-            <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">{trip.title}</h3>
-            
-            <div className="flex flex-col space-y-2 mb-6">
-              <div className="flex items-center text-gray-400">
-                <MapPin className="w-4 h-4 mr-2 text-indigo-400" />
-                <span>{trip.location}</span>
-              </div>
-              <div className="flex items-center text-gray-400">
-                <Calendar className="w-4 h-4 mr-2 text-primary-400" />
-                <span>{trip.dateRange}</span>
-              </div>
-            </div>
-
-            {type === 'ongoing' && (
-              <div className="mt-auto">
-                <div className="flex justify-between text-xs text-gray-400 mb-2">
-                  <span>Trip Progress</span>
-                  <span>{trip.progress}%</span>
-                </div>
-                <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-primary-500 to-indigo-500" style={{ width: `${trip.progress}%` }}></div>
-                </div>
-              </div>
-            )}
-
-            {type === 'upcoming' && (
-              <div className="mt-auto">
-                <p className="text-amber-400/90 font-medium text-sm flex items-center">
-                  <Clock className="w-4 h-4 mr-1.5" /> {trip.daysLeft} days left until departure
-                </p>
-              </div>
-            )}
-
-            <div className="absolute bottom-6 right-6 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-              <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
-                <ArrowRight className="w-5 h-5" />
-              </div>
-            </div>
-          </div>
-        </div>
+        </Link>
       </motion.div>
     );
   };

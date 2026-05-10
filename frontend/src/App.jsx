@@ -9,6 +9,8 @@ import BuildItinerary from './pages/BuildItinerary';
 import UserTrips from './pages/UserTrips';
 import UserProfile from './pages/UserProfile';
 import ActivitySearch from './pages/ActivitySearch';
+import ItineraryView from './pages/ItineraryView';
+import PackingChecklist from './pages/PackingChecklist';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/my-trips" element={<UserTrips />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/search" element={<ActivitySearch />} />
+          <Route path="/itinerary" element={<ItineraryView />} />
+          <Route path="/packing-checklist" element={<PackingChecklist />} />
         </Route>
       </Routes>
     </Router>
