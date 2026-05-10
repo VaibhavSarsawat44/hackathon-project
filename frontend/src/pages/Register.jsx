@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Camera, ArrowRight } from 'lucide-react';
+import { Camera, ArrowRight, Upload, X, Image as ImageIcon } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,6 +33,14 @@ const Register = () => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  // Photo & Camera States
+  const [photo, setPhoto] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -52,6 +60,58 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     window.location.href = '/dashboard';
+  };
+
+  // Camera Functions
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
+    setIsCameraActive(false);
+  };
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      stopCamera();
+    }
+  }, [isModalOpen]);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsCameraActive(true);
+    } catch (err) {
+      console.error("Error accessing camera: ", err);
+      alert("Could not access camera. Please check permissions.");
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      setPhoto(dataUrl);
+      stopCamera();
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPhoto(event.target.result);
+        setIsModalOpen(false);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -124,15 +184,20 @@ const Register = () => {
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: -5 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setIsModalOpen(true)}
                 className="w-28 h-28 rounded-full border-2 border-gray-600 bg-gray-800 flex items-center justify-center relative overflow-hidden group/avatar cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-colors hover:border-primary-500 hover:shadow-[0_0_30px_rgba(14,165,233,0.3)]"
               >
-                <motion.span 
-                  className="text-gray-400 font-medium z-10 transition-opacity group-hover/avatar:opacity-0"
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Photo
-                </motion.span>
+                {photo ? (
+                  <img src={photo} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <motion.span 
+                    className="text-gray-400 font-medium z-10 transition-opacity group-hover/avatar:opacity-0"
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    Photo
+                  </motion.span>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-600/80 to-indigo-600/80 flex flex-col items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-all duration-300 transform translate-y-full group-hover/avatar:translate-y-0">
                   <Camera className="text-white w-8 h-8 mb-1" />
                   <span className="text-xs text-white font-medium">Upload</span>
@@ -163,7 +228,7 @@ const Register = () => {
                         onFocus={() => setFocusedInput(field.name)}
                         onBlur={() => setFocusedInput(null)}
                         onChange={handleChange}
-                        className="block w-full px-4 py-3.5 bg-transparent text-white sm:text-sm outline-none placeholder-gray-500 transition-all focus:bg-gray-900"
+                        className="block w-full px-4 py-3.5 bg-transparent text-white sm:text-sm outline-none placeholder-gray-500 transition-all focus:bg-gray-900 [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:white]"
                         placeholder={field.placeholder}
                       />
                     </div>
@@ -194,10 +259,10 @@ const Register = () => {
                 type="submit"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-1/2 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-primary-300 bg-gray-800/80 border-2 border-dashed border-gray-600 hover:border-primary-500 hover:bg-gray-800 hover:text-primary-100 focus:outline-none overflow-hidden group/btn shadow-[0_0_15px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.3)] transition-all"
+                className="w-1/2 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all"
               >
                 {/* Shine effect on hover */}
-                <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"></div>
+                <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
                 
                 <span className="relative z-10 flex items-center">
                   Register Users
@@ -209,6 +274,93 @@ const Register = () => {
 
         </motion.div>
       </div>
+
+      {/* Photo Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-gray-900 border border-gray-700 rounded-3xl p-6 w-full max-w-sm flex flex-col items-center relative shadow-2xl"
+            >
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h3 className="text-xl font-bold text-white mb-6">Profile Photo</h3>
+              
+              <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-800 border-4 border-gray-700 mb-6 relative flex items-center justify-center">
+                {isCameraActive ? (
+                  <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    playsInline 
+                    className="w-full h-full object-cover transform scale-x-[-1]"
+                  />
+                ) : photo ? (
+                  <img src={photo} alt="Current" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="w-16 h-16 text-gray-600" />
+                )}
+                <canvas ref={canvasRef} className="hidden" />
+              </div>
+
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
+
+              {isCameraActive ? (
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={capturePhoto}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Capture
+                  </button>
+                  <button 
+                    onClick={stopCamera}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-gray-700 hover:bg-gray-600 transition-colors flex items-center justify-center"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Upload className="w-5 h-5" />
+                    Update Photo
+                  </button>
+                  <button 
+                    onClick={startCamera}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-gray-700 hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Camera
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Add keyframes for shimmer animation */}
       <style>{`
