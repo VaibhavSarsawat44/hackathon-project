@@ -16,7 +16,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip';
+  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips';
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
@@ -32,6 +32,7 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Home</Link>
             <a href="#features" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Features</a>
             <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Dashboard</Link>
+            <Link to="/my-trips" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">My Trips</Link>
             
             <div className="flex items-center space-x-4 ml-4 border-l border-gray-200 pl-4">
               {!isAuthRoute ? (
@@ -70,6 +71,7 @@ const Navbar = () => {
               <Link to="/" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Home</Link>
               <a href="#features" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Features</a>
               <Link to="/dashboard" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Dashboard</Link>
+              <Link to="/my-trips" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">My Trips</Link>
               <div className="h-px bg-gray-200 my-2"></div>
               {!isAuthRoute ? (
                 <>

@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CreateTrip from './pages/CreateTrip';
 import BuildItinerary from './pages/BuildItinerary';
+import UserTrips from './pages/UserTrips';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-trip" element={<CreateTrip />} />
           <Route path="/build-itinerary" element={<BuildItinerary />} />
+          <Route path="/my-trips" element={<UserTrips />} />
         </Route>
       </Routes>
     </Router>
