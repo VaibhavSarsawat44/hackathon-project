@@ -163,14 +163,30 @@ const CreateTrip = () => {
                     </p>
                     
                     {/* Hover reveal button */}
-                    <button className="mt-6 w-full flex items-center justify-center py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+                    <Link to="/build-itinerary" className="mt-6 w-full flex items-center justify-center py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
                       Add to Itinerary <ArrowRight className="w-4 h-4 ml-2" />
-                    </button>
+                    </Link>
                   </div>
                 </motion.div>
               ))}
             </div>
           </motion.div>
+
+        {/* Floating Action Button to continue */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+          className="fixed bottom-8 right-8 z-50"
+        >
+          <Link 
+            to="/build-itinerary"
+            className="bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-8 py-4 rounded-full font-bold shadow-[0_10px_40px_rgba(79,70,229,0.5)] border border-white/10 flex items-center group transition-all transform hover:scale-105 active:scale-95"
+          >
+            Build Itinerary
+            <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-2 duration-300" />
+          </Link>
+        </motion.div>
 
         </motion.div>
       </div>
