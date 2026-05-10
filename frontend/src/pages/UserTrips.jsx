@@ -176,7 +176,7 @@ const UserTrips = () => {
             <p className="text-gray-400">Manage and view all your travel itineraries.</p>
           </div>
 
-          {/* Search & Filter Bar matching wireframe */}
+
           <div className="flex gap-3">
             <div className="relative group w-full md:w-64">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
