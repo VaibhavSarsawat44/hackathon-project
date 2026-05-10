@@ -1,0 +1,354 @@
+{
+  "info": {
+    "name": "Traveloop API v2.0",
+    "description": "Complete REST API collection for the Traveloop travel planning platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5001/api" },
+    { "key": "token", "value": "" },
+    { "key": "tripId", "value": "" },
+    { "key": "stopId", "value": "" },
+    { "key": "activityId", "value": "" },
+    { "key": "packingId", "value": "" },
+    { "key": "noteId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('token', pm.response.json().data.token); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@traveloop.com\",\n  \"password\": \"test1234\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) { pm.collectionVariables.set('token', pm.response.json().data.token); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@traveloop.com\",\n  \"password\": \"test1234\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Name\",\n  \"bio\": \"Avid traveler and explorer\",\n  \"profilePhoto\": \"https://example.com/photo.jpg\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Add Saved Destination",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"city\": \"Tokyo\",\n  \"country\": \"Japan\",\n  \"image\": \"https://example.com/tokyo.jpg\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/me/destinations", "host": ["{{baseUrl}}"], "path": ["auth", "me", "destinations"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"test1234\",\n  \"newPassword\": \"newpassword123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "✈️ Trips",
+      "item": [
+        {
+          "name": "Get All Trips",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/trips", "host": ["{{baseUrl}}"], "path": ["trips"] }
+          }
+        },
+        {
+          "name": "Create Trip",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('tripId', pm.response.json().data.trip._id); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripName\": \"Europe Backpacking 2024\",\n  \"description\": \"3 weeks across Europe\",\n  \"startDate\": \"2024-06-01\",\n  \"endDate\": \"2024-06-21\",\n  \"totalBudget\": 3000,\n  \"transportCost\": 500,\n  \"stayCost\": 700,\n  \"mealCost\": 300,\n  \"estimatedCost\": 2800,\n  \"coverPhoto\": \"https://example.com/europe.jpg\",\n  \"isPublic\": true,\n  \"status\": \"planning\"\n}" },
+            "url": { "raw": "{{baseUrl}}/trips", "host": ["{{baseUrl}}"], "path": ["trips"] }
+          }
+        },
+        {
+          "name": "Get Trip by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/trips/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["trips", "{{tripId}}"] }
+          }
+        },
+        {
+          "name": "Update Trip",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripName\": \"Europe Backpacking 2024 - Updated\",\n  \"status\": \"upcoming\",\n  \"isPublic\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/trips/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["trips", "{{tripId}}"] }
+          }
+        },
+        {
+          "name": "Get Budget Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/trips/{{tripId}}/budget", "host": ["{{baseUrl}}"], "path": ["trips", "{{tripId}}", "budget"] }
+          }
+        },
+        {
+          "name": "Delete Trip",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/trips/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["trips", "{{tripId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📍 Stops",
+      "item": [
+        {
+          "name": "Add Stop",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('stopId', pm.response.json().data.stop._id); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"city\": \"Paris\",\n  \"country\": \"France\",\n  \"arrivalDate\": \"2024-06-01\",\n  \"departureDate\": \"2024-06-05\",\n  \"notes\": \"Stay near Montmartre\"\n}" },
+            "url": { "raw": "{{baseUrl}}/stops", "host": ["{{baseUrl}}"], "path": ["stops"] }
+          }
+        },
+        {
+          "name": "Get Stops for Trip",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/stops/trip/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["stops", "trip", "{{tripId}}"] }
+          }
+        },
+        {
+          "name": "Update Stop",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"notes\": \"Updated notes - try the croissants!\",\n  \"departureDate\": \"2024-06-06\"\n}" },
+            "url": { "raw": "{{baseUrl}}/stops/{{stopId}}", "host": ["{{baseUrl}}"], "path": ["stops", "{{stopId}}"] }
+          }
+        },
+        {
+          "name": "Reorder Stops",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"orderedIds\": [\"{{stopId}}\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/stops/reorder", "host": ["{{baseUrl}}"], "path": ["stops", "reorder"] }
+          }
+        },
+        {
+          "name": "Delete Stop",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/stops/{{stopId}}", "host": ["{{baseUrl}}"], "path": ["stops", "{{stopId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Activities",
+      "item": [
+        {
+          "name": "Add Activity",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('activityId', pm.response.json().data.activity._id); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"stopId\": \"{{stopId}}\",\n  \"activityName\": \"Eiffel Tower Visit\",\n  \"category\": \"sightseeing\",\n  \"cost\": 25,\n  \"duration\": \"3 hours\",\n  \"description\": \"Evening visit with the light show\",\n  \"image\": \"https://example.com/eiffel.jpg\"\n}" },
+            "url": { "raw": "{{baseUrl}}/activities", "host": ["{{baseUrl}}"], "path": ["activities"] }
+          }
+        },
+        {
+          "name": "Get Activities by Stop",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/activities/{{stopId}}", "host": ["{{baseUrl}}"], "path": ["activities", "{{stopId}}"] }
+          }
+        },
+        {
+          "name": "Update Activity",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"cost\": 30,\n  \"duration\": \"4 hours\"\n}" },
+            "url": { "raw": "{{baseUrl}}/activities/{{activityId}}", "host": ["{{baseUrl}}"], "path": ["activities", "{{activityId}}"] }
+          }
+        },
+        {
+          "name": "Delete Activity",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/activities/{{activityId}}", "host": ["{{baseUrl}}"], "path": ["activities", "{{activityId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎒 Packing",
+      "item": [
+        {
+          "name": "Add Packing Item",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('packingId', pm.response.json().data.item._id); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"itemName\": \"Passport\",\n  \"category\": \"documents\",\n  \"quantity\": 1,\n  \"notes\": \"Keep in carry-on\"\n}" },
+            "url": { "raw": "{{baseUrl}}/packing", "host": ["{{baseUrl}}"], "path": ["packing"] }
+          }
+        },
+        {
+          "name": "Get Packing List",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/packing/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["packing", "{{tripId}}"] }
+          }
+        },
+        {
+          "name": "Toggle Packed Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/packing/{{packingId}}/toggle", "host": ["{{baseUrl}}"], "path": ["packing", "{{packingId}}", "toggle"] }
+          }
+        },
+        {
+          "name": "Update Packing Item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"quantity\": 2,\n  \"notes\": \"Pack both copies\"\n}" },
+            "url": { "raw": "{{baseUrl}}/packing/{{packingId}}", "host": ["{{baseUrl}}"], "path": ["packing", "{{packingId}}"] }
+          }
+        },
+        {
+          "name": "Delete Packing Item",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/packing/{{packingId}}", "host": ["{{baseUrl}}"], "path": ["packing", "{{packingId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📓 Notes / Journal",
+      "item": [
+        {
+          "name": "Create Note (Trip-level)",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { pm.collectionVariables.set('noteId', pm.response.json().data.note._id); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"title\": \"Day 1 - Arrived in Paris!\",\n  \"content\": \"Finally landed at CDG airport. The city lights from above were magical.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/notes", "host": ["{{baseUrl}}"], "path": ["notes"] }
+          }
+        },
+        {
+          "name": "Create Note (Stop-level)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"stopId\": \"{{stopId}}\",\n  \"title\": \"Paris Tips\",\n  \"content\": \"The Eiffel Tower is best at night. Book tickets in advance!\"\n}" },
+            "url": { "raw": "{{baseUrl}}/notes", "host": ["{{baseUrl}}"], "path": ["notes"] }
+          }
+        },
+        {
+          "name": "Get Notes for Trip",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/notes/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["notes", "{{tripId}}"] }
+          }
+        },
+        {
+          "name": "Get Notes for Specific Stop",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/notes/{{tripId}}?stopId={{stopId}}", "host": ["{{baseUrl}}"], "path": ["notes", "{{tripId}}"], "query": [{ "key": "stopId", "value": "{{stopId}}" }] }
+          }
+        },
+        {
+          "name": "Update Note",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Paris - Updated\",\n  \"content\": \"The city is absolutely beautiful at night!\"\n}" },
+            "url": { "raw": "{{baseUrl}}/notes/{{noteId}}", "host": ["{{baseUrl}}"], "path": ["notes", "{{noteId}}"] }
+          }
+        },
+        {
+          "name": "Delete Note",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/notes/{{noteId}}", "host": ["{{baseUrl}}"], "path": ["notes", "{{noteId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌐 Public Itinerary",
+      "item": [
+        {
+          "name": "Get Public Trip",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/public/{{tripId}}", "host": ["{{baseUrl}}"], "path": ["public", "{{tripId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "❤️ Health Check",
+      "item": [
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          }
+        }
+      ]
+    }
+  ]
+}
