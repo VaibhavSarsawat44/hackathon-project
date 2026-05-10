@@ -46,17 +46,7 @@ const Dashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
-        {/* Top Header matching wireframe (Optional if Navbar is global, but wireframe shows it integrated) */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4"
-        >
-          <h1 className="text-2xl font-bold tracking-wider">Traveloop</h1>
-          <div className="w-10 h-10 rounded-full border-2 border-gray-700 bg-gray-800 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors">
-            <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
-          </div>
-        </motion.div>
+
 
         {/* Banner Image */}
         <motion.div 
