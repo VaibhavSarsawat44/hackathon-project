@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -9,35 +9,21 @@ import BuildItinerary from './pages/BuildItinerary';
 import UserTrips from './pages/UserTrips';
 import UserProfile from './pages/UserProfile';
 import ActivitySearch from './pages/ActivitySearch';
-import { isLoggedIn } from './services/authService';
-
-// Protected Route — redirects to /login if no token
-const ProtectedRoute = ({ children }) => {
-  return isLoggedIn() ? children : <Navigate to="/login" replace />;
-};
-
-// Public Only Route — redirects to /dashboard if already logged in
-const PublicRoute = ({ children }) => {
-  return !isLoggedIn() ? children : <Navigate to="/dashboard" replace />;
-};
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route element={<MainLayout />}>
-          {/* Public pages */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-
-          {/* Protected pages */}
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/create-trip" element={<ProtectedRoute><CreateTrip /></ProtectedRoute>} />
-          <Route path="/build-itinerary" element={<ProtectedRoute><BuildItinerary /></ProtectedRoute>} />
-          <Route path="/my-trips" element={<ProtectedRoute><UserTrips /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-          <Route path="/search" element={<ProtectedRoute><ActivitySearch /></ProtectedRoute>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-trip" element={<CreateTrip />} />
+          <Route path="/build-itinerary" element={<BuildItinerary />} />
+          <Route path="/my-trips" element={<UserTrips />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/search" element={<ActivitySearch />} />
         </Route>
       </Routes>
     </Router>
