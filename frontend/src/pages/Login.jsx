@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { User, Lock, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { login, saveAuth } from '../services/authService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,10 +21,13 @@ const itemVariants = {
 };
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [focusedInput, setFocusedInput] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,9 +41,19 @@ const Login = () => {
     setMousePosition({ x, y });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = '/dashboard';
+    setError('');
+    setLoading(true);
+    try {
+      const res = await login(email, password);
+      saveAuth(res.data.token, res.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -124,24 +138,24 @@ const Login = () => {
               </motion.div>
             </motion.div>
 
-            {/* Username Input */}
+            {/* Email Input */}
             <motion.div variants={itemVariants} className="relative group/input">
-              <div className={`absolute inset-0 bg-gradient-to-r from-primary-500 to-indigo-500 rounded-2xl blur opacity-0 transition-opacity duration-300 ${focusedInput === 'username' ? 'opacity-30' : 'group-hover/input:opacity-20'}`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-r from-primary-500 to-indigo-500 rounded-2xl blur opacity-0 transition-opacity duration-300 ${focusedInput === 'email' ? 'opacity-30' : 'group-hover/input:opacity-20'}`}></div>
               <div className="relative rounded-2xl shadow-sm bg-gray-950/80 border border-gray-700 overflow-hidden flex items-center transition-colors focus-within:border-primary-500">
                 <div className="pl-4 flex items-center pointer-events-none text-gray-400 z-10">
-                  <User className={`h-5 w-5 transition-colors ${focusedInput === 'username' ? 'text-primary-400' : ''}`} />
+                  <Mail className={`h-5 w-5 transition-colors ${focusedInput === 'email' ? 'text-primary-400' : ''}`} />
                 </div>
                 <input
-                  id="username"
-                  name="username"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
-                  value={username}
-                  onFocus={() => setFocusedInput('username')}
+                  value={email}
+                  onFocus={() => setFocusedInput('email')}
                   onBlur={() => setFocusedInput(null)}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full pl-3 pr-4 py-4 bg-transparent text-white sm:text-sm outline-none placeholder-gray-500 [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:white] relative z-10"
-                  placeholder="Username"
+                  placeholder="Email address"
                 />
               </div>
             </motion.div>
@@ -168,20 +182,27 @@ const Login = () => {
               </div>
             </motion.div>
 
+            {/* Error Message */}
+            {error && (
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2">
+                {error}
+              </motion.p>
+            )}
+
             {/* Login Button */}
             <motion.div variants={itemVariants} className="pt-4 flex justify-center w-full">
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-2/3 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all"
+                disabled={loading}
+                whileHover={{ scale: loading ? 1 : 1.02 }}
+                whileTap={{ scale: loading ? 1 : 0.98 }}
+                className="w-2/3 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all"
               >
-                {/* Shine effect on hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
-                
                 <span className="relative z-10 flex items-center">
-                  Login Securely
-                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300" />
+                  {loading ? 'Logging in...' : 'Login Securely'}
+                  {!loading && <ArrowRight className="ml-2 h-4 w-4 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300" />}
                 </span>
               </motion.button>
             </motion.div>

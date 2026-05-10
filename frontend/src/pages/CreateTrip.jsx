@@ -1,21 +1,38 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Search, Compass, Star, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Calendar, MapPin, Search, Compass, Star, ArrowRight, DollarSign } from 'lucide-react';
+import { createTrip } from '../services/tripService';
 
 const CreateTrip = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    place: '',
+    tripName: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    budget: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await createTrip(formData);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to create trip.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const containerVariants = {

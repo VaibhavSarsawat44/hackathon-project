@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Camera, ArrowRight, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { signup, saveAuth } from '../services/authService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,16 +21,15 @@ const itemVariants = {
 };
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
-    phone: '',
-    city: '',
-    country: '',
-    additionalInfo: ''
+    password: '',
+    confirmPassword: '',
   });
-  
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -57,9 +57,22 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = '/dashboard';
+    setError('');
+    if (formData.password !== formData.confirmPassword) {
+      return setError('Passwords do not match');
+    }
+    setLoading(true);
+    try {
+      const res = await signup(formData.name, formData.email, formData.password);
+      saveAuth(res.data.token, res.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Camera Functions
