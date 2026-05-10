@@ -32,12 +32,12 @@ const CreateTrip = () => {
   };
 
   const suggestions = [
-    { id: 1, title: 'Eiffel Tower', location: 'Paris, France', rating: 4.9, image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=500&auto=format&fit=crop&q=60' },
-    { id: 2, title: 'Colosseum', location: 'Rome, Italy', rating: 4.8, image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=500&auto=format&fit=crop&q=60' },
-    { id: 3, title: 'Fuji Mountain', location: 'Honshu, Japan', rating: 4.9, image: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=500&auto=format&fit=crop&q=60' },
-    { id: 4, title: 'Grand Canyon', location: 'Arizona, USA', rating: 4.8, image: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=500&auto=format&fit=crop&q=60' },
-    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac542?w=500&auto=format&fit=crop&q=60' },
-    { id: 6, title: 'Machu Picchu', location: 'Cusco Region, Peru', rating: 4.9, image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=500&auto=format&fit=crop&q=60' },
+    { id: 1, title: 'Eiffel Tower', location: 'Paris, France', rating: 4.9, image: 'https://picsum.photos/seed/paris/500/800' },
+    { id: 2, title: 'Colosseum', location: 'Rome, Italy', rating: 4.8, image: 'https://picsum.photos/seed/rome/500/800' },
+    { id: 3, title: 'Fuji Mountain', location: 'Honshu, Japan', rating: 4.9, image: 'https://picsum.photos/seed/fuji/500/800' },
+    { id: 4, title: 'Grand Canyon', location: 'Arizona, USA', rating: 4.8, image: 'https://picsum.photos/seed/canyon/500/800' },
+    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://picsum.photos/seed/santorini/500/800' },
+    { id: 6, title: 'Machu Picchu', location: 'Cusco Region, Peru', rating: 4.9, image: 'https://picsum.photos/seed/peru/500/800' },
   ];
 
   return (
