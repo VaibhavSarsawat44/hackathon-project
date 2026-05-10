@@ -9,6 +9,7 @@ import BuildItinerary from './pages/BuildItinerary';
 import UserTrips from './pages/UserTrips';
 import UserProfile from './pages/UserProfile';
 import ActivitySearch from './pages/ActivitySearch';
+import Community from './pages/Community';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/my-trips" element={<UserTrips />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/search" element={<ActivitySearch />} />
+          <Route path="/community" element={<Community />} />
         </Route>
       </Routes>
     </Router>
