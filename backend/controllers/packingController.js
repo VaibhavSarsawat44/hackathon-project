@@ -3,12 +3,13 @@ const Trip = require('../models/Trip');
 
 // Helper: verify trip ownership
 const verifyTrip = async (tripId, userId) => {
-  return await Trip.findOne({ _id: tripId, user: userId });
+  const trip = await Trip.findOne({ _id: tripId, user: userId });
+  return trip;
 };
 
 // ─────────────────────────────────────────
-// @desc    Get all packing items for a trip
-// @route   GET /api/trips/:tripId/packing
+// @desc    Get packing list for a trip
+// @route   GET /api/packing/:tripId
 // @access  Private
 // ─────────────────────────────────────────
 const getPackingList = async (req, res, next) => {
@@ -20,18 +21,21 @@ const getPackingList = async (req, res, next) => {
 
     const items = await PackingItem.find({ trip: req.params.tripId }).sort({ category: 1 });
 
-    const totalItems = items.length;
-    const packedItems = items.filter((i) => i.packedStatus).length;
+    const total = items.length;
+    const packed = items.filter((i) => i.packedStatus).length;
 
     res.status(200).json({
       success: true,
-      stats: {
-        total: totalItems,
-        packed: packedItems,
-        unpacked: totalItems - packedItems,
-        percentPacked: totalItems > 0 ? parseFloat(((packedItems / totalItems) * 100).toFixed(1)) : 0,
+      message: 'Packing list fetched successfully',
+      data: {
+        stats: {
+          total,
+          packed,
+          unpacked: total - packed,
+          percentPacked: total > 0 ? parseFloat(((packed / total) * 100).toFixed(1)) : 0,
+        },
+        items,
       },
-      items,
     });
   } catch (error) {
     next(error);
@@ -39,31 +43,30 @@ const getPackingList = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Add a packing item
-// @route   POST /api/trips/:tripId/packing
+// @desc    Add a packing item (flat route)
+// @route   POST /api/packing
 // @access  Private
+// Body: { tripId, itemName, category, quantity, notes }
 // ─────────────────────────────────────────
 const addPackingItem = async (req, res, next) => {
   try {
-    const trip = await verifyTrip(req.params.tripId, req.user._id);
+    const { tripId, itemName, category, quantity, notes } = req.body;
+
+    if (!tripId || !itemName) {
+      return res.status(400).json({ success: false, message: 'tripId and itemName are required' });
+    }
+
+    const trip = await verifyTrip(tripId, req.user._id);
     if (!trip) {
       return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    const { itemName, category, quantity, notes } = req.body;
-
-    const item = await PackingItem.create({
-      trip: req.params.tripId,
-      itemName,
-      category,
-      quantity,
-      notes,
-    });
+    const item = await PackingItem.create({ trip: tripId, itemName, category, quantity, notes });
 
     res.status(201).json({
       success: true,
       message: 'Item added to packing list',
-      item,
+      data: { item },
     });
   } catch (error) {
     next(error);
@@ -71,31 +74,31 @@ const addPackingItem = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Update a packing item (mark packed/unpacked, edit fields)
-// @route   PUT /api/trips/:tripId/packing/:itemId
+// @desc    Update a packing item
+// @route   PUT /api/packing/:id
 // @access  Private
 // ─────────────────────────────────────────
 const updatePackingItem = async (req, res, next) => {
   try {
-    const trip = await verifyTrip(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
-
-    const item = await PackingItem.findOneAndUpdate(
-      { _id: req.params.itemId, trip: req.params.tripId },
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!item) {
+    const packingItem = await PackingItem.findById(req.params.id);
+    if (!packingItem) {
       return res.status(404).json({ success: false, message: 'Packing item not found' });
     }
+
+    const trip = await verifyTrip(packingItem.trip, req.user._id);
+    if (!trip) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
+    const item = await PackingItem.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.status(200).json({
       success: true,
       message: 'Packing item updated',
-      item,
+      data: { item },
     });
   } catch (error) {
     next(error);
@@ -104,28 +107,28 @@ const updatePackingItem = async (req, res, next) => {
 
 // ─────────────────────────────────────────
 // @desc    Toggle packed status
-// @route   PATCH /api/trips/:tripId/packing/:itemId/toggle
+// @route   PATCH /api/packing/:id/toggle
 // @access  Private
 // ─────────────────────────────────────────
 const togglePackedStatus = async (req, res, next) => {
   try {
-    const trip = await verifyTrip(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
-
-    const item = await PackingItem.findOne({ _id: req.params.itemId, trip: req.params.tripId });
-    if (!item) {
+    const packingItem = await PackingItem.findById(req.params.id);
+    if (!packingItem) {
       return res.status(404).json({ success: false, message: 'Packing item not found' });
     }
 
-    item.packedStatus = !item.packedStatus;
-    await item.save();
+    const trip = await verifyTrip(packingItem.trip, req.user._id);
+    if (!trip) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
+    packingItem.packedStatus = !packingItem.packedStatus;
+    await packingItem.save();
 
     res.status(200).json({
       success: true,
-      message: `Item marked as ${item.packedStatus ? 'packed' : 'unpacked'}`,
-      item,
+      message: `Item marked as ${packingItem.packedStatus ? 'packed' : 'unpacked'}`,
+      data: { item: packingItem },
     });
   } catch (error) {
     next(error);
@@ -134,38 +137,31 @@ const togglePackedStatus = async (req, res, next) => {
 
 // ─────────────────────────────────────────
 // @desc    Delete a packing item
-// @route   DELETE /api/trips/:tripId/packing/:itemId
+// @route   DELETE /api/packing/:id
 // @access  Private
 // ─────────────────────────────────────────
 const deletePackingItem = async (req, res, next) => {
   try {
-    const trip = await verifyTrip(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
-
-    const item = await PackingItem.findOneAndDelete({
-      _id: req.params.itemId,
-      trip: req.params.tripId,
-    });
-
-    if (!item) {
+    const packingItem = await PackingItem.findById(req.params.id);
+    if (!packingItem) {
       return res.status(404).json({ success: false, message: 'Packing item not found' });
     }
+
+    const trip = await verifyTrip(packingItem.trip, req.user._id);
+    if (!trip) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
+    await packingItem.deleteOne();
 
     res.status(200).json({
       success: true,
       message: 'Packing item deleted',
+      data: null,
     });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = {
-  getPackingList,
-  addPackingItem,
-  updatePackingItem,
-  togglePackedStatus,
-  deletePackingItem,
-};
+module.exports = { getPackingList, addPackingItem, updatePackingItem, togglePackedStatus, deletePackingItem };

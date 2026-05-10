@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const tripSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     tripName: {
       type: String,
       required: [true, 'Trip name is required'],
@@ -14,25 +19,28 @@ const tripSchema = new mongoose.Schema(
       maxlength: [1000, 'Description cannot exceed 1000 characters'],
       default: '',
     },
-    startDate: {
-      type: Date,
-    },
-    endDate: {
-      type: Date,
-    },
+    startDate: { type: Date },
+    endDate: { type: Date },
+
+    // ── Budget Fields ──────────────────────────────────────────────
+    // User-defined total budget
     totalBudget: {
       type: Number,
       default: 0,
       min: [0, 'Budget cannot be negative'],
     },
+    // Manual cost breakdown inputs (set by user)
+    estimatedCost: { type: Number, default: 0 },
+    transportCost: { type: Number, default: 0 },
+    stayCost:      { type: Number, default: 0 },
+    mealCost:      { type: Number, default: 0 },
+    // activityCost is auto-calculated from Activity collection
+    // but can also be stored as a cached snapshot
+    activityCost:  { type: Number, default: 0 },
+
     coverPhoto: {
       type: String,
       default: '',
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
     },
     isPublic: {
       type: Boolean,
@@ -51,17 +59,10 @@ const tripSchema = new mongoose.Schema(
   }
 );
 
-// Virtual to get stops count
-tripSchema.virtual('stops', {
-  ref: 'Stop',
-  localField: '_id',
-  foreignField: 'trip',
-});
-
-// Virtual to compute trip duration in days
+// Virtual: trip duration in days
 tripSchema.virtual('durationDays').get(function () {
   if (this.startDate && this.endDate) {
-    const diff = this.endDate - this.startDate;
+    const diff = new Date(this.endDate) - new Date(this.startDate);
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   }
   return null;

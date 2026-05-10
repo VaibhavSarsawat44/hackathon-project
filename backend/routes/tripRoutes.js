@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { getTrips, getTripById, createTrip, updateTrip, deleteTrip } = require('../controllers/tripController');
-const { protect } = require('../middleware/auth');
+const { getBudgetSummary } = require('../controllers/budgetController');
+const { protect } = require('../middleware/authMiddleware');
 
-// All trip routes require authentication
 router.use(protect);
 
 router.route('/').get(getTrips).post(createTrip);
-
 router.route('/:id').get(getTripById).put(updateTrip).delete(deleteTrip);
+router.get('/:id/budget', getBudgetSummary);
 
 module.exports = router;

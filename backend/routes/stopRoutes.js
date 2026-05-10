@@ -1,23 +1,18 @@
 const express = require('express');
-// mergeParams: true allows access to :tripId from the parent router
-const router = express.Router({ mergeParams: true });
-const { getStops, getStopById, addStop, updateStop, deleteStop, reorderStops } = require('../controllers/stopController');
-const { protect } = require('../middleware/auth');
+const router = express.Router();
+const { getStopsByTrip, addStop, updateStop, deleteStop, reorderStops } = require('../controllers/stopController');
+const { protect } = require('../middleware/authMiddleware');
 
-// Import activity routes for nesting
-const activityRouter = require('./activityRoutes');
-
-// All stop routes require authentication
 router.use(protect);
 
-// Reorder must be before /:stopId to avoid conflict
+// GET all stops for a trip
+router.get('/trip/:tripId', getStopsByTrip);
+
+// Reorder (must be before /:id to avoid conflict)
 router.put('/reorder', reorderStops);
 
-router.route('/').get(getStops).post(addStop);
-
-router.route('/:stopId').get(getStopById).put(updateStop).delete(deleteStop);
-
-// Nest activity routes under stops
-router.use('/:stopId/activities', activityRouter);
+// Flat CRUD
+router.post('/', addStop);
+router.route('/:id').put(updateStop).delete(deleteStop);
 
 module.exports = router;

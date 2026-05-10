@@ -1,20 +1,16 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });
-const {
-  getPackingList,
-  addPackingItem,
-  updatePackingItem,
-  togglePackedStatus,
-  deletePackingItem,
-} = require('../controllers/packingController');
-const { protect } = require('../middleware/auth');
+const router = express.Router();
+const { getPackingList, addPackingItem, updatePackingItem, togglePackedStatus, deletePackingItem } = require('../controllers/packingController');
+const { protect } = require('../middleware/authMiddleware');
 
 router.use(protect);
 
-router.route('/').get(getPackingList).post(addPackingItem);
+// GET packing list for a trip
+router.get('/:tripId', getPackingList);
 
-router.route('/:itemId').put(updatePackingItem).delete(deletePackingItem);
-
-router.patch('/:itemId/toggle', togglePackedStatus);
+// Flat CRUD
+router.post('/', addPackingItem);
+router.route('/:id').put(updatePackingItem).delete(deletePackingItem);
+router.patch('/:id/toggle', togglePackedStatus);
 
 module.exports = router;

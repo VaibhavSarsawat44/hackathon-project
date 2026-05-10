@@ -1,30 +1,36 @@
 const Stop = require('../models/Stop');
 const Trip = require('../models/Trip');
+const Activity = require('../models/Activity');
 
-// Helper: verify trip ownership
-const verifyTripOwnership = async (tripId, userId) => {
-  const trip = await Trip.findOne({ _id: tripId, user: userId });
-  return trip;
+// Helper: verify the user owns the trip that owns the stop
+const verifyStopOwnership = async (stopId, userId) => {
+  const stop = await Stop.findById(stopId);
+  if (!stop) return { error: 'Stop not found', status: 404 };
+
+  const trip = await Trip.findOne({ _id: stop.trip, user: userId });
+  if (!trip) return { error: 'Access denied', status: 403 };
+
+  return { stop, trip };
 };
 
 // ─────────────────────────────────────────
 // @desc    Get all stops for a trip
-// @route   GET /api/trips/:tripId/stops
+// @route   GET /api/stops/trip/:tripId
 // @access  Private
 // ─────────────────────────────────────────
-const getStops = async (req, res, next) => {
+const getStopsByTrip = async (req, res, next) => {
   try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
+    const trip = await Trip.findOne({ _id: req.params.tripId, user: req.user._id });
     if (!trip) {
       return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    const stops = await Stop.find({ trip: req.params.tripId }).sort({ order: 1 });
+    const stops = await Stop.find({ trip: req.params.tripId }).sort({ orderIndex: 1 });
 
     res.status(200).json({
       success: true,
-      count: stops.length,
-      stops,
+      message: 'Stops fetched successfully',
+      data: { count: stops.length, stops },
     });
   } catch (error) {
     next(error);
@@ -32,60 +38,34 @@ const getStops = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Get single stop by ID
-// @route   GET /api/trips/:tripId/stops/:stopId
+// @desc    Add a stop to a trip (flat route)
+// @route   POST /api/stops
 // @access  Private
-// ─────────────────────────────────────────
-const getStopById = async (req, res, next) => {
-  try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
-
-    const stop = await Stop.findOne({ _id: req.params.stopId, trip: req.params.tripId });
-    if (!stop) {
-      return res.status(404).json({ success: false, message: 'Stop not found' });
-    }
-
-    res.status(200).json({ success: true, stop });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// ─────────────────────────────────────────
-// @desc    Add a stop to a trip
-// @route   POST /api/trips/:tripId/stops
-// @access  Private
+// Body: { tripId, city, country, arrivalDate, departureDate, notes }
 // ─────────────────────────────────────────
 const addStop = async (req, res, next) => {
   try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
+    const { tripId, city, country, arrivalDate, departureDate, notes } = req.body;
+
+    if (!tripId || !city || !country) {
+      return res.status(400).json({ success: false, message: 'tripId, city and country are required' });
+    }
+
+    const trip = await Trip.findOne({ _id: tripId, user: req.user._id });
     if (!trip) {
       return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    const { city, country, arrivalDate, departureDate, notes } = req.body;
+    // Auto-assign orderIndex
+    const lastStop = await Stop.findOne({ trip: tripId }).sort({ orderIndex: -1 });
+    const orderIndex = lastStop ? lastStop.orderIndex + 1 : 0;
 
-    // Determine next order value
-    const lastStop = await Stop.findOne({ trip: req.params.tripId }).sort({ order: -1 });
-    const order = lastStop ? lastStop.order + 1 : 0;
-
-    const stop = await Stop.create({
-      trip: req.params.tripId,
-      city,
-      country,
-      arrivalDate,
-      departureDate,
-      notes,
-      order,
-    });
+    const stop = await Stop.create({ trip: tripId, city, country, arrivalDate, departureDate, notes, orderIndex });
 
     res.status(201).json({
       success: true,
       message: 'Stop added successfully',
-      stop,
+      data: { stop },
     });
   } catch (error) {
     next(error);
@@ -94,22 +74,15 @@ const addStop = async (req, res, next) => {
 
 // ─────────────────────────────────────────
 // @desc    Update a stop
-// @route   PUT /api/trips/:tripId/stops/:stopId
+// @route   PUT /api/stops/:id
 // @access  Private
 // ─────────────────────────────────────────
 const updateStop = async (req, res, next) => {
   try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
+    const { stop, error, status } = await verifyStopOwnership(req.params.id, req.user._id);
+    if (error) return res.status(status).json({ success: false, message: error });
 
-    const stop = await Stop.findOne({ _id: req.params.stopId, trip: req.params.tripId });
-    if (!stop) {
-      return res.status(404).json({ success: false, message: 'Stop not found' });
-    }
-
-    const allowedFields = ['city', 'country', 'arrivalDate', 'departureDate', 'notes'];
+    const allowedFields = ['city', 'country', 'arrivalDate', 'departureDate', 'notes', 'orderIndex'];
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) stop[field] = req.body[field];
     });
@@ -119,7 +92,7 @@ const updateStop = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Stop updated successfully',
-      stop: updatedStop,
+      data: { stop: updatedStop },
     });
   } catch (error) {
     next(error);
@@ -127,25 +100,22 @@ const updateStop = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Delete a stop
-// @route   DELETE /api/trips/:tripId/stops/:stopId
+// @desc    Delete a stop and its activities
+// @route   DELETE /api/stops/:id
 // @access  Private
 // ─────────────────────────────────────────
 const deleteStop = async (req, res, next) => {
   try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
-    if (!trip) {
-      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
-    }
+    const { stop, error, status } = await verifyStopOwnership(req.params.id, req.user._id);
+    if (error) return res.status(status).json({ success: false, message: error });
 
-    const stop = await Stop.findOneAndDelete({ _id: req.params.stopId, trip: req.params.tripId });
-    if (!stop) {
-      return res.status(404).json({ success: false, message: 'Stop not found' });
-    }
+    await Activity.deleteMany({ stop: stop._id });
+    await stop.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: 'Stop deleted successfully',
+      message: 'Stop and its activities deleted successfully',
+      data: null,
     });
   } catch (error) {
     next(error);
@@ -153,44 +123,40 @@ const deleteStop = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Reorder stops within a trip
-// @route   PUT /api/trips/:tripId/stops/reorder
+// @desc    Reorder stops for a trip
+// @route   PUT /api/stops/reorder
 // @access  Private
-// Body: { orderedIds: ["stopId1", "stopId2", ...] }
+// Body: { tripId, orderedIds: ["id1","id2",...] }
 // ─────────────────────────────────────────
 const reorderStops = async (req, res, next) => {
   try {
-    const trip = await verifyTripOwnership(req.params.tripId, req.user._id);
+    const { tripId, orderedIds } = req.body;
+
+    if (!tripId || !Array.isArray(orderedIds)) {
+      return res.status(400).json({ success: false, message: 'tripId and orderedIds[] are required' });
+    }
+
+    const trip = await Trip.findOne({ _id: tripId, user: req.user._id });
     if (!trip) {
       return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    const { orderedIds } = req.body;
-
-    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'orderedIds must be a non-empty array of stop IDs',
-      });
-    }
-
-    // Update each stop's order based on its position in the array
-    const updatePromises = orderedIds.map((id, index) =>
-      Stop.findOneAndUpdate({ _id: id, trip: req.params.tripId }, { order: index }, { new: true })
+    await Promise.all(
+      orderedIds.map((id, index) =>
+        Stop.findOneAndUpdate({ _id: id, trip: tripId }, { orderIndex: index })
+      )
     );
 
-    await Promise.all(updatePromises);
-
-    const stops = await Stop.find({ trip: req.params.tripId }).sort({ order: 1 });
+    const stops = await Stop.find({ trip: tripId }).sort({ orderIndex: 1 });
 
     res.status(200).json({
       success: true,
       message: 'Stops reordered successfully',
-      stops,
+      data: { stops },
     });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { getStops, getStopById, addStop, updateStop, deleteStop, reorderStops };
+module.exports = { getStopsByTrip, addStop, updateStop, deleteStop, reorderStops };

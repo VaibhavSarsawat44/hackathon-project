@@ -1,12 +1,15 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true }); // Access :tripId and :stopId from parent
-const { getActivities, addActivity, updateActivity, removeActivity } = require('../controllers/activityController');
-const { protect } = require('../middleware/auth');
+const router = express.Router();
+const { getActivitiesByStop, addActivity, updateActivity, deleteActivity } = require('../controllers/activityController');
+const { protect } = require('../middleware/authMiddleware');
 
 router.use(protect);
 
-router.route('/').get(getActivities).post(addActivity);
+// GET activities for a stop
+router.get('/:stopId', getActivitiesByStop);
 
-router.route('/:activityId').put(updateActivity).delete(removeActivity);
+// Flat CRUD
+router.post('/', addActivity);
+router.route('/:id').put(updateActivity).delete(deleteActivity);
 
 module.exports = router;

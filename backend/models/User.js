@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const savedDestinationSchema = new mongoose.Schema(
+  {
+    city: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true },
+    image: { type: String, default: '' },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -21,11 +30,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Never return password in queries by default
+      select: false,
     },
-    avatar: {
+    // Renamed from 'avatar' → 'profilePhoto' per new spec
+    profilePhoto: {
       type: String,
       default: '',
+    },
+    // Array of saved destination objects { city, country, image }
+    savedDestinations: {
+      type: [savedDestinationSchema],
+      default: [],
     },
     bio: {
       type: String,
@@ -33,9 +48,7 @@ const userSchema = new mongoose.Schema(
       default: '',
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 // Hash password before saving

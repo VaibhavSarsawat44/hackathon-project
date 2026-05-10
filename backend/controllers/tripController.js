@@ -1,6 +1,8 @@
 const Trip = require('../models/Trip');
 const Stop = require('../models/Stop');
+const Activity = require('../models/Activity');
 const PackingItem = require('../models/PackingItem');
+const Note = require('../models/Note');
 
 // ─────────────────────────────────────────
 // @desc    Get all trips for logged-in user
@@ -13,8 +15,8 @@ const getTrips = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      count: trips.length,
-      trips,
+      message: 'Trips fetched successfully',
+      data: { count: trips.length, trips },
     });
   } catch (error) {
     next(error);
@@ -22,31 +24,24 @@ const getTrips = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Get a single trip by ID
+// @desc    Get single trip with full details
 // @route   GET /api/trips/:id
 // @access  Private
 // ─────────────────────────────────────────
 const getTripById = async (req, res, next) => {
   try {
-    const trip = await Trip.findOne({
-      _id: req.params.id,
-      user: req.user._id,
-    });
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user._id });
 
     if (!trip) {
-      return res.status(404).json({
-        success: false,
-        message: 'Trip not found or access denied',
-      });
+      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    // Populate stops with their activities
-    const stops = await Stop.find({ trip: trip._id }).sort({ order: 1 });
+    const stops = await Stop.find({ trip: trip._id }).sort({ orderIndex: 1 });
 
     res.status(200).json({
       success: true,
-      trip,
-      stops,
+      message: 'Trip fetched successfully',
+      data: { trip, stops },
     });
   } catch (error) {
     next(error);
@@ -60,25 +55,27 @@ const getTripById = async (req, res, next) => {
 // ─────────────────────────────────────────
 const createTrip = async (req, res, next) => {
   try {
-    const { tripName, description, startDate, endDate, totalBudget, coverPhoto, isPublic, status } =
-      req.body;
+    const {
+      tripName, description, startDate, endDate,
+      totalBudget, estimatedCost, transportCost, stayCost, mealCost,
+      coverPhoto, isPublic, status,
+    } = req.body;
+
+    if (!tripName) {
+      return res.status(400).json({ success: false, message: 'Trip name is required' });
+    }
 
     const trip = await Trip.create({
-      tripName,
-      description,
-      startDate,
-      endDate,
-      totalBudget,
-      coverPhoto,
-      isPublic,
-      status,
       user: req.user._id,
+      tripName, description, startDate, endDate,
+      totalBudget, estimatedCost, transportCost, stayCost, mealCost,
+      coverPhoto, isPublic, status,
     });
 
     res.status(201).json({
       success: true,
       message: 'Trip created successfully',
-      trip,
+      data: { trip },
     });
   } catch (error) {
     next(error);
@@ -95,21 +92,13 @@ const updateTrip = async (req, res, next) => {
     const trip = await Trip.findOne({ _id: req.params.id, user: req.user._id });
 
     if (!trip) {
-      return res.status(404).json({
-        success: false,
-        message: 'Trip not found or access denied',
-      });
+      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
     const allowedFields = [
-      'tripName',
-      'description',
-      'startDate',
-      'endDate',
-      'totalBudget',
-      'coverPhoto',
-      'isPublic',
-      'status',
+      'tripName', 'description', 'startDate', 'endDate',
+      'totalBudget', 'estimatedCost', 'transportCost', 'stayCost', 'mealCost', 'activityCost',
+      'coverPhoto', 'isPublic', 'status',
     ];
 
     allowedFields.forEach((field) => {
@@ -121,7 +110,7 @@ const updateTrip = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Trip updated successfully',
-      trip: updatedTrip,
+      data: { trip: updatedTrip },
     });
   } catch (error) {
     next(error);
@@ -129,7 +118,7 @@ const updateTrip = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────
-// @desc    Delete a trip (and its stops & packing items)
+// @desc    Delete a trip + all related data
 // @route   DELETE /api/trips/:id
 // @access  Private
 // ─────────────────────────────────────────
@@ -138,20 +127,23 @@ const deleteTrip = async (req, res, next) => {
     const trip = await Trip.findOne({ _id: req.params.id, user: req.user._id });
 
     if (!trip) {
-      return res.status(404).json({
-        success: false,
-        message: 'Trip not found or access denied',
-      });
+      return res.status(404).json({ success: false, message: 'Trip not found or access denied' });
     }
 
-    // Cascade delete stops and packing items
+    // Cascade: delete stops and their activities
+    const stops = await Stop.find({ trip: trip._id });
+    const stopIds = stops.map((s) => s._id);
+
+    await Activity.deleteMany({ stop: { $in: stopIds } });
     await Stop.deleteMany({ trip: trip._id });
     await PackingItem.deleteMany({ trip: trip._id });
+    await Note.deleteMany({ trip: trip._id });
     await trip.deleteOne();
 
     res.status(200).json({
       success: true,
       message: 'Trip and all related data deleted successfully',
+      data: null,
     });
   } catch (error) {
     next(error);

@@ -1,140 +1,142 @@
+const Activity = require('../models/Activity');
 const Stop = require('../models/Stop');
 const Trip = require('../models/Trip');
 
-// Helper: verify trip ownership and find stop
-const findStop = async (tripId, stopId, userId) => {
-  const trip = await Trip.findOne({ _id: tripId, user: userId });
-  if (!trip) return { error: 'Trip not found or access denied', status: 404 };
-
-  const stop = await Stop.findOne({ _id: stopId, trip: tripId });
+// Helper: verify user owns the stop they're adding activity to
+const verifyStopOwnership = async (stopId, userId) => {
+  const stop = await Stop.findById(stopId);
   if (!stop) return { error: 'Stop not found', status: 404 };
 
-  return { trip, stop };
+  const trip = await Trip.findOne({ _id: stop.trip, user: userId });
+  if (!trip) return { error: 'Access denied', status: 403 };
+
+  return { stop, trip };
 };
 
 // ─────────────────────────────────────────
 // @desc    Get all activities for a stop
-// @route   GET /api/trips/:tripId/stops/:stopId/activities
+// @route   GET /api/activities/:stopId
 // @access  Private
 // ─────────────────────────────────────────
-const getActivities = async (req, res, next) => {
+const getActivitiesByStop = async (req, res, next) => {
   try {
-    const { stop, error, status } = await findStop(
-      req.params.tripId,
-      req.params.stopId,
-      req.user._id
-    );
+    const { stop, error, status } = await verifyStopOwnership(req.params.stopId, req.user._id);
     if (error) return res.status(status).json({ success: false, message: error });
+
+    const activities = await Activity.find({ stop: req.params.stopId }).sort({ createdAt: 1 });
+
+    const totalCost = activities.reduce((sum, a) => sum + (a.cost || 0), 0);
 
     res.status(200).json({
       success: true,
-      count: stop.activities.length,
-      activities: stop.activities,
+      message: 'Activities fetched successfully',
+      data: {
+        city: stop.city,
+        count: activities.length,
+        totalCost: parseFloat(totalCost.toFixed(2)),
+        activities,
+      },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 // ─────────────────────────────────────────
 // @desc    Add an activity to a stop
-// @route   POST /api/trips/:tripId/stops/:stopId/activities
+// @route   POST /api/activities
 // @access  Private
+// Body: { stopId, activityName, category, cost, duration, description, image }
 // ─────────────────────────────────────────
 const addActivity = async (req, res, next) => {
   try {
-    const { stop, error, status } = await findStop(
-      req.params.tripId,
-      req.params.stopId,
-      req.user._id
-    );
+    const { stopId, activityName, category, cost, duration, description, image } = req.body;
+
+    if (!stopId || !activityName) {
+      return res.status(400).json({ success: false, message: 'stopId and activityName are required' });
+    }
+
+    const { error, status } = await verifyStopOwnership(stopId, req.user._id);
     if (error) return res.status(status).json({ success: false, message: error });
 
-    const { activityName, category, cost, duration, description } = req.body;
-
-    stop.activities.push({ activityName, category, cost, duration, description });
-    await stop.save();
-
-    const newActivity = stop.activities[stop.activities.length - 1];
+    const activity = await Activity.create({
+      stop: stopId,
+      activityName,
+      category,
+      cost,
+      duration,
+      description,
+      image,
+    });
 
     res.status(201).json({
       success: true,
       message: 'Activity added successfully',
-      activity: newActivity,
+      data: { activity },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 // ─────────────────────────────────────────
 // @desc    Update an activity
-// @route   PUT /api/trips/:tripId/stops/:stopId/activities/:activityId
+// @route   PUT /api/activities/:id
 // @access  Private
 // ─────────────────────────────────────────
 const updateActivity = async (req, res, next) => {
   try {
-    const { stop, error, status } = await findStop(
-      req.params.tripId,
-      req.params.stopId,
-      req.user._id
-    );
-    if (error) return res.status(status).json({ success: false, message: error });
-
-    const activity = stop.activities.id(req.params.activityId);
+    const activity = await Activity.findById(req.params.id);
     if (!activity) {
       return res.status(404).json({ success: false, message: 'Activity not found' });
     }
 
-    const { activityName, category, cost, duration, description } = req.body;
+    // Verify ownership via stop → trip chain
+    const { error, status } = await verifyStopOwnership(activity.stop, req.user._id);
+    if (error) return res.status(status).json({ success: false, message: error });
 
-    if (activityName !== undefined) activity.activityName = activityName;
-    if (category !== undefined) activity.category = category;
-    if (cost !== undefined) activity.cost = cost;
-    if (duration !== undefined) activity.duration = duration;
-    if (description !== undefined) activity.description = description;
+    const allowedFields = ['activityName', 'category', 'cost', 'duration', 'description', 'image'];
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) activity[field] = req.body[field];
+    });
 
-    await stop.save();
+    const updatedActivity = await activity.save();
 
     res.status(200).json({
       success: true,
       message: 'Activity updated successfully',
-      activity,
+      data: { activity: updatedActivity },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 // ─────────────────────────────────────────
-// @desc    Remove an activity from a stop
-// @route   DELETE /api/trips/:tripId/stops/:stopId/activities/:activityId
+// @desc    Delete an activity
+// @route   DELETE /api/activities/:id
 // @access  Private
 // ─────────────────────────────────────────
-const removeActivity = async (req, res, next) => {
+const deleteActivity = async (req, res, next) => {
   try {
-    const { stop, error, status } = await findStop(
-      req.params.tripId,
-      req.params.stopId,
-      req.user._id
-    );
-    if (error) return res.status(status).json({ success: false, message: error });
-
-    const activity = stop.activities.id(req.params.activityId);
+    const activity = await Activity.findById(req.params.id);
     if (!activity) {
       return res.status(404).json({ success: false, message: 'Activity not found' });
     }
 
-    activity.deleteOne();
-    await stop.save();
+    const { error, status } = await verifyStopOwnership(activity.stop, req.user._id);
+    if (error) return res.status(status).json({ success: false, message: error });
+
+    await activity.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: 'Activity removed successfully',
+      message: 'Activity deleted successfully',
+      data: null,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
-module.exports = { getActivities, addActivity, updateActivity, removeActivity };
+module.exports = { getActivitiesByStop, addActivity, updateActivity, deleteActivity };
