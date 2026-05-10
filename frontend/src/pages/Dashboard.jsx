@@ -27,7 +27,7 @@ const Dashboard = () => {
     { id: 1, title: 'Mountain Escapes', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=80' },
     { id: 2, title: 'Beach Resorts', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&auto=format&fit=crop&q=80' },
     { id: 3, title: 'City Tours', image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=500&auto=format&fit=crop&q=80' },
-    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1537565266751-34ddcc30004c?w=500&auto=format&fit=crop&q=80' },
+    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=500&auto=format&fit=crop&q=80' },
     { id: 5, title: 'Road Trips', image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=80' },
   ];
 
