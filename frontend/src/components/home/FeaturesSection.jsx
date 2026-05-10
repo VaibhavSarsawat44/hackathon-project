@@ -36,11 +36,14 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-24 bg-gray-950 relative border-t border-gray-900">
+      {/* Subtle background element */}
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Everything you need to travel smart</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything you need to travel smart</h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Traveloop brings all your travel tools into one powerful, beautifully designed platform.
           </p>
         </div>
@@ -49,17 +52,17 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+              className="p-8 rounded-2xl bg-gray-900/40 border border-gray-800 backdrop-blur-sm hover:border-primary-500/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.1)] hover:-translate-y-1 transition-all duration-300 group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="w-12 h-12 rounded-xl bg-white text-primary-600 flex items-center justify-center shadow-sm border border-gray-100 mb-6 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all">
+              <div className="w-12 h-12 rounded-xl bg-gray-800 text-primary-400 flex items-center justify-center border border-gray-700 mb-6 group-hover:scale-110 group-hover:bg-gradient-to-r group-hover:from-primary-600 group-hover:to-indigo-600 group-hover:text-white group-hover:border-transparent transition-all shadow-lg">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-300 transition-colors">{feature.title}</h3>
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
                 {feature.description}
               </p>
             </motion.div>
