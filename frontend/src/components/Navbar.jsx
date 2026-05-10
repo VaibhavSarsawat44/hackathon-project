@@ -29,8 +29,12 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Home</Link>
-            <a href="#features" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Features</a>
+            {!isAuthRoute && (
+              <>
+                <Link to="/" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Home</Link>
+                <a href="#features" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Features</a>
+              </>
+            )}
             <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Dashboard</Link>
             <Link to="/my-trips" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">My Trips</Link>
             
@@ -68,8 +72,12 @@ const Navbar = () => {
             className="md:hidden glass absolute w-full left-0 top-full shadow-xl border-t border-gray-100"
           >
             <div className="px-4 pt-2 pb-6 space-y-2 flex flex-col">
-              <Link to="/" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Home</Link>
-              <a href="#features" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Features</a>
+              {!isAuthRoute && (
+                <>
+                  <Link to="/" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Home</Link>
+                  <a href="#features" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Features</a>
+                </>
+              )}
               <Link to="/dashboard" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Dashboard</Link>
               <Link to="/my-trips" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">My Trips</Link>
               <div className="h-px bg-gray-200 my-2"></div>
