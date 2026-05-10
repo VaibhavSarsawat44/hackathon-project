@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
@@ -51,9 +51,9 @@ const Navbar = () => {
                 <div className="relative">
                   <button 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm block focus:outline-none"
+                    className="w-10 h-10 rounded-full border-2 border-primary-100 bg-primary-50 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm flex items-center justify-center focus:outline-none"
                   >
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                    <User className="w-6 h-6 text-primary-600" />
                   </button>
 
                   <AnimatePresence>
@@ -124,8 +124,8 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center space-x-3 px-3 py-3 hover:bg-primary-50 rounded-lg transition-colors">
-                    <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden shadow-sm">
-                      <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                    <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-primary-50 overflow-hidden shadow-sm flex items-center justify-center">
+                      <User className="w-6 h-6 text-primary-600" />
                     </div>
                     <span className="font-medium text-gray-700">Account</span>
                   </Link>

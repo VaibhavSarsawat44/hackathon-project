@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase } from 'lucide-react';
+import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase, User } from 'lucide-react';
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -98,9 +98,9 @@ const UserProfile = () => {
               <div className="relative group flex-shrink-0">
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
-                  className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-gray-700 overflow-hidden shadow-[0_0_30px_rgba(79,70,229,0.2)] group-hover:border-primary-500 transition-colors duration-300"
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-gray-700 overflow-hidden shadow-[0_0_30px_rgba(79,70,229,0.2)] group-hover:border-primary-500 transition-colors duration-300 flex items-center justify-center bg-gray-800"
                 >
-                  <img src="https://i.pravatar.cc/300?img=11" alt="Profile" className="w-full h-full object-cover" />
+                  <User className="w-16 h-16 md:w-20 md:h-20 text-gray-400" />
                 </motion.div>
                 <button className="absolute bottom-1 right-1 w-10 h-10 bg-primary-600 hover:bg-primary-500 rounded-full flex items-center justify-center border-4 border-gray-900 shadow-lg transition-colors">
                   <Camera className="w-4 h-4 text-white" />
