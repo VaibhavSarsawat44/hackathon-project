@@ -9,9 +9,6 @@ import BuildItinerary from './pages/BuildItinerary';
 import UserTrips from './pages/UserTrips';
 import UserProfile from './pages/UserProfile';
 import ActivitySearch from './pages/ActivitySearch';
-import TripNotes from './pages/TripNotes';
-import ExpenseInvoice from './pages/ExpenseInvoice';
-import AdminPanel from './pages/AdminPanel';
 import { isLoggedIn } from './services/authService';
 
 // Protected Route — redirects to /login if no token
@@ -41,9 +38,6 @@ function App() {
           <Route path="/my-trips" element={<ProtectedRoute><UserTrips /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
           <Route path="/search" element={<ProtectedRoute><ActivitySearch /></ProtectedRoute>} />
-          <Route path="/notes" element={<ProtectedRoute><TripNotes /></ProtectedRoute>} />
-          <Route path="/invoice" element={<ProtectedRoute><ExpenseInvoice /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
         </Route>
       </Routes>
     </Router>
