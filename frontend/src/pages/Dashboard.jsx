@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar } from 'lucide-react';
+import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar, ClipboardList, Receipt } from 'lucide-react';
 
 const Dashboard = () => {
 
@@ -96,6 +96,12 @@ const Dashboard = () => {
             <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
               <SortDesc className="w-4 h-4 mr-2" /> Sort by...
             </button>
+            <Link to="/invoice" className="flex items-center whitespace-nowrap bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600/30 text-emerald-400 px-5 py-3.5 rounded-2xl transition-all font-bold">
+              <Receipt className="w-4 h-4 mr-2" /> Invoice
+            </Link>
+            <Link to="/packing-checklist" className="flex items-center whitespace-nowrap bg-indigo-600/20 border border-indigo-500/30 hover:bg-indigo-600/30 text-indigo-400 px-5 py-3.5 rounded-2xl transition-all font-bold">
+              <ClipboardList className="w-4 h-4 mr-2" /> Packing Checklist
+            </Link>
           </div>
         </motion.div>
 

@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, SortAsc, MapPin, DollarSign, Clock, 
   ChevronRight, MoreVertical, Download, Share2, Plus,
-  TrendingDown, CreditCard, Wallet, ArrowRight, Calendar
+  TrendingDown, CreditCard, Wallet, ArrowRight, Calendar, ClipboardList, Receipt
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ItineraryView = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,6 +95,12 @@ const ItineraryView = () => {
             <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 transition-all text-sm font-medium">
               <Download className="w-4 h-4" /> Export
             </button>
+            <Link to="/invoice" className="flex items-center gap-2 px-4 py-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/30 rounded-xl transition-all text-sm font-bold">
+              <Receipt className="w-4 h-4" /> Invoice
+            </Link>
+            <Link to="/packing-checklist" className="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600/30 rounded-xl transition-all text-sm font-bold">
+              <ClipboardList className="w-4 h-4" /> Packing Checklist
+            </Link>
             <button className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-500 rounded-xl transition-all text-sm font-bold shadow-lg shadow-primary-900/20">
               <Share2 className="w-4 h-4" /> Share Trip
             </button>

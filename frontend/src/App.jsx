@@ -12,6 +12,7 @@ import ActivitySearch from './pages/ActivitySearch';
 import ItineraryView from './pages/ItineraryView';
 import PackingChecklist from './pages/PackingChecklist';
 import Community from './pages/Community';
+import ExpenseInvoice from './pages/ExpenseInvoice';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/itinerary" element={<ItineraryView />} />
           <Route path="/packing-checklist" element={<PackingChecklist />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/invoice" element={<ExpenseInvoice />} />
         </Route>
       </Routes>
     </Router>

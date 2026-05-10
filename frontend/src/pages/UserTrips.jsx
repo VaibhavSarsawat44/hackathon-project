@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, Filter, SortDesc, Calendar, MapPin, ArrowRight, Clock, CheckCircle, Navigation } from 'lucide-react';
+import { Search, Filter, SortDesc, Calendar, MapPin, ArrowRight, Clock, CheckCircle, Navigation, ClipboardList, Receipt } from 'lucide-react';
 
 const UserTrips = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -198,6 +198,12 @@ const UserTrips = () => {
             <button className="flex items-center bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-4 py-2.5 rounded-xl transition-all hover:bg-gray-800 text-sm">
               <SortDesc className="w-4 h-4 mr-2" /> Sort by...
             </button>
+            <Link to="/invoice" className="flex items-center bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600/30 text-emerald-400 px-4 py-2.5 rounded-xl transition-all text-sm font-bold">
+              <Receipt className="w-4 h-4 mr-2" /> Invoice
+            </Link>
+            <Link to="/packing-checklist" className="flex items-center bg-indigo-600/20 border border-indigo-500/30 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2.5 rounded-xl transition-all text-sm font-bold">
+              <ClipboardList className="w-4 h-4 mr-2" /> Packing Checklist
+            </Link>
           </div>
         </motion.div>
 
