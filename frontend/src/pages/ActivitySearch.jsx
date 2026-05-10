@@ -35,7 +35,7 @@ const ActivitySearch = () => {
       reviews: 2340,
       price: '$180',
       duration: '2-3 hours',
-      image: 'https://images.unsplash.com/photo-1503220317266-8c3444a87cbc?w=400&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1541873676-a18131494184?w=400&auto=format&fit=crop&q=80',
       tags: ['Adventure', 'Aerial', 'Scenic'],
       featured: true
     },
@@ -48,7 +48,7 @@ const ActivitySearch = () => {
       reviews: 1820,
       price: '$85',
       duration: '30-45 min',
-      image: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?w=400&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1562280963-8a5475740a10?w=400&auto=format&fit=crop&q=80',
       tags: ['Adventure', 'Mountains', 'Budget'],
     },
     {
@@ -60,7 +60,7 @@ const ActivitySearch = () => {
       reviews: 3100,
       price: '$120',
       duration: '25-40 min',
-      image: 'https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=400&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1530533718754-001d2668365a?w=400&auto=format&fit=crop&q=80',
       tags: ['Coastal', 'Scenic', 'Popular'],
     },
     {
