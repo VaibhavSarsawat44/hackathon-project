@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase } from 'lucide-react';
+import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase, User } from 'lucide-react';
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -98,9 +98,9 @@ const UserProfile = () => {
               <div className="relative group flex-shrink-0">
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
-                  className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-gray-700 overflow-hidden shadow-[0_0_30px_rgba(79,70,229,0.2)] group-hover:border-primary-500 transition-colors duration-300"
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-gray-700 overflow-hidden shadow-[0_0_30px_rgba(79,70,229,0.2)] group-hover:border-primary-500 transition-colors duration-300 flex items-center justify-center bg-gray-800"
                 >
-                  <img src="https://i.pravatar.cc/300?img=11" alt="Profile" className="w-full h-full object-cover" />
+                  <User className="w-16 h-16 md:w-20 md:h-20 text-gray-400" />
                 </motion.div>
                 <button className="absolute bottom-1 right-1 w-10 h-10 bg-primary-600 hover:bg-primary-500 rounded-full flex items-center justify-center border-4 border-gray-900 shadow-lg transition-colors">
                   <Camera className="w-4 h-4 text-white" />
@@ -111,13 +111,21 @@ const UserProfile = () => {
               <div className="flex-grow text-center md:text-left">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
                   <h1 className="text-3xl font-bold text-white">{userData.name}</h1>
-                  <button 
-                    onClick={() => setIsEditing(!isEditing)}
-                    className={`self-center md:self-auto px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${isEditing ? 'bg-primary-600 border-primary-500 text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'}`}
-                  >
-                    <Edit3 className="w-3.5 h-3.5 inline mr-1.5" />
-                    {isEditing ? 'Save Changes' : 'Edit Profile'}
-                  </button>
+                  <div className="flex gap-3 self-center md:self-auto">
+                    <button 
+                      onClick={() => setIsEditing(!isEditing)}
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${isEditing ? 'bg-primary-600 border-primary-500 text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'}`}
+                    >
+                      <Edit3 className="w-3.5 h-3.5 inline mr-1.5" />
+                      {isEditing ? 'Save Changes' : 'Edit Profile'}
+                    </button>
+                    <Link 
+                      to="/login"
+                      className="px-4 py-1.5 rounded-full text-sm font-medium border bg-transparent border-red-500/50 text-red-400 hover:bg-red-500/10 hover:border-red-500 hover:text-red-300 transition-all flex items-center"
+                    >
+                      Log out
+                    </Link>
+                  </div>
                 </div>
 
                 <p className="text-gray-400 mb-5 max-w-xl leading-relaxed">{userData.bio}</p>
