@@ -8,6 +8,7 @@ import CreateTrip from './pages/CreateTrip';
 import BuildItinerary from './pages/BuildItinerary';
 import UserTrips from './pages/UserTrips';
 import UserProfile from './pages/UserProfile';
+import ActivitySearch from './pages/ActivitySearch';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/build-itinerary" element={<BuildItinerary />} />
           <Route path="/my-trips" element={<UserTrips />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/search" element={<ActivitySearch />} />
         </Route>
       </Routes>
     </Router>

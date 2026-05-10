@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar } from 'lucide-react';
 
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -79,18 +78,14 @@ const Dashboard = () => {
           transition={{ delay: 0.2 }}
           className="flex flex-col md:flex-row gap-4 mb-12"
         >
-          <div className="flex-1 relative group">
+          <Link to="/search" className="flex-1 relative group block">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-500 group-focus-within:text-primary-500 transition-colors" />
+              <Search className="h-5 w-5 text-gray-500 group-hover:text-primary-500 transition-colors" />
             </div>
-            <input
-              type="text"
-              placeholder="Search destinations, trips, or activities..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all shadow-inner"
-            />
-          </div>
+            <div className="w-full bg-gray-900/80 border border-gray-700 text-gray-500 rounded-2xl pl-12 pr-4 py-3.5 hover:border-primary-500 transition-all shadow-inner cursor-pointer">
+              Search destinations, trips, or activities...
+            </div>
+          </Link>
           <div className="flex gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             <button className="flex items-center whitespace-nowrap bg-gray-900/80 border border-gray-700 hover:border-gray-500 text-gray-300 px-5 py-3.5 rounded-2xl transition-all hover:bg-gray-800">
               <Grid className="w-4 h-4 mr-2" /> Group by
