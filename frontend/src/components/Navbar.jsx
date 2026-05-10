@@ -16,7 +16,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips';
+  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips' || location.pathname === '/profile';
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
@@ -43,9 +43,9 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm">
+                <Link to="/profile" className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors shadow-sm block">
                   <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
-                </div>
+                </Link>
               )}
             </div>
           </div>
@@ -81,12 +81,12 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="flex items-center space-x-3 px-3 py-3">
+                <Link to="/profile" className="flex items-center space-x-3 px-3 py-3">
                   <div className="w-10 h-10 rounded-full border-2 border-primary-100 bg-gray-100 overflow-hidden shadow-sm">
                     <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
                   </div>
                   <span className="font-medium text-gray-700">My Profile</span>
-                </div>
+                </Link>
               )}
             </div>
           </motion.div>
