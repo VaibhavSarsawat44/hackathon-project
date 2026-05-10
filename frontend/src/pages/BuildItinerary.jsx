@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, MapPin, Calendar, DollarSign, Trash2, GripVertical, Plane, Hotel, Navigation } from 'lucide-react';
+import { Plus, MapPin, Calendar, DollarSign, Trash2, GripVertical, Plane, Hotel, Navigation, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const BuildItinerary = () => {
   const [sections, setSections] = useState([
@@ -170,11 +171,18 @@ const BuildItinerary = () => {
           >
             <button 
               onClick={addSection}
-              className="w-full flex items-center justify-center py-5 rounded-[2rem] border-2 border-dashed border-gray-700 text-gray-400 hover:text-white hover:border-primary-500 hover:bg-primary-500/5 transition-all duration-300 group"
+              className="w-full flex items-center justify-center py-5 rounded-[2rem] border-2 border-dashed border-gray-700 text-gray-400 hover:text-white hover:border-primary-500 hover:bg-primary-500/5 transition-all duration-300 group mb-4"
             >
               <Plus className="w-6 h-6 mr-3 group-hover:scale-125 transition-transform duration-300" />
               <span className="text-lg font-medium">Add another Section</span>
             </button>
+            <Link 
+              to="/search"
+              className="w-full flex items-center justify-center py-5 rounded-[2rem] bg-gray-900/50 border border-gray-800 text-primary-400 hover:text-primary-300 hover:bg-gray-800 transition-all duration-300 group"
+            >
+              <Search className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-lg font-medium">Explore Activities & Places</span>
+            </Link>
           </motion.div>
 
         </div>

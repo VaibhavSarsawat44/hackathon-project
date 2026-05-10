@@ -16,7 +16,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips' || location.pathname === '/profile';
+  const isAuthRoute = location.pathname === '/dashboard' || location.pathname === '/create-trip' || location.pathname === '/build-itinerary' || location.pathname === '/my-trips' || location.pathname === '/profile' || location.pathname === '/search' || location.pathname === '/invoice' || location.pathname === '/packing-checklist' || location.pathname === '/itinerary';
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
@@ -37,6 +37,7 @@ const Navbar = () => {
             )}
             <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Dashboard</Link>
             <Link to="/my-trips" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">My Trips</Link>
+            <Link to="/search" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Explore</Link>
             
             <div className="flex items-center space-x-4 ml-4 border-l border-gray-200 pl-4">
               {!isAuthRoute ? (
@@ -80,6 +81,7 @@ const Navbar = () => {
               )}
               <Link to="/dashboard" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Dashboard</Link>
               <Link to="/my-trips" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">My Trips</Link>
+              <Link to="/search" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg">Explore</Link>
               <div className="h-px bg-gray-200 my-2"></div>
               {!isAuthRoute ? (
                 <>
