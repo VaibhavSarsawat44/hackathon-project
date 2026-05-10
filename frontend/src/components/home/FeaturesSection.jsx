@@ -36,14 +36,14 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-24 bg-slate-900 relative border-t border-slate-800">
+    <section id="features" className="py-24 bg-gray-950 relative border-t border-gray-900">
       {/* Subtle background element */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-sm">Everything you need to travel smart</h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto drop-shadow-sm">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto drop-shadow-sm">
             Traveloop brings all your travel tools into one powerful, beautifully designed platform.
           </p>
         </div>
@@ -52,7 +52,7 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="p-8 rounded-2xl bg-slate-800/60 border border-slate-700 backdrop-blur-sm hover:border-primary-500/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+              className="p-8 rounded-2xl bg-gray-900/60 border border-gray-800 backdrop-blur-sm hover:border-primary-500/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.15)] hover:-translate-y-1 transition-all duration-300 group"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -62,7 +62,7 @@ const FeaturesSection = () => {
                 {feature.icon}
               </div>
               <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-300 transition-colors">{feature.title}</h3>
-              <p className="text-slate-300 leading-relaxed group-hover:text-slate-200 transition-colors">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
                 {feature.description}
               </p>
             </motion.div>
