@@ -11,6 +11,7 @@ import UserProfile from './pages/UserProfile';
 import ActivitySearch from './pages/ActivitySearch';
 import ItineraryView from './pages/ItineraryView';
 import PackingChecklist from './pages/PackingChecklist';
+import Community from './pages/Community';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/search" element={<ActivitySearch />} />
           <Route path="/itinerary" element={<ItineraryView />} />
           <Route path="/packing-checklist" element={<PackingChecklist />} />
+          <Route path="/community" element={<Community />} />
         </Route>
       </Routes>
     </Router>
