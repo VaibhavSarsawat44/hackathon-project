@@ -36,7 +36,7 @@ const CreateTrip = () => {
     { id: 2, title: 'Colosseum', location: 'Rome, Italy', rating: 4.8, image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=500&auto=format&fit=crop&q=80' },
     { id: 3, title: 'Fuji Mountain', location: 'Honshu, Japan', rating: 4.9, image: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=500&auto=format&fit=crop&q=80' },
     { id: 4, title: 'Grand Canyon', location: 'Arizona, USA', rating: 4.8, image: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=500&auto=format&fit=crop&q=80' },
-    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac542?w=500&auto=format&fit=crop&q=80' },
+    { id: 5, title: 'Santorini Coast', location: 'Santorini, Greece', rating: 4.7, image: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=500&auto=format&fit=crop&q=80' },
     { id: 6, title: 'Machu Picchu', location: 'Cusco Region, Peru', rating: 4.9, image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=500&auto=format&fit=crop&q=80' },
   ];
 

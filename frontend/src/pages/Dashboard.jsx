@@ -27,13 +27,13 @@ const Dashboard = () => {
     { id: 1, title: 'Mountain Escapes', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=80' },
     { id: 2, title: 'Beach Resorts', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&auto=format&fit=crop&q=80' },
     { id: 3, title: 'City Tours', image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=500&auto=format&fit=crop&q=80' },
-    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1504280390224-69634e02927d?w=500&auto=format&fit=crop&q=80' },
+    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1537565266751-34ddcc30004c?w=500&auto=format&fit=crop&q=80' },
     { id: 5, title: 'Road Trips', image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=80' },
   ];
 
   const previousTrips = [
     { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=80' },
-    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac542?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=500&auto=format&fit=crop&q=80' },
     { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=500&auto=format&fit=crop&q=80' },
   ];
 
