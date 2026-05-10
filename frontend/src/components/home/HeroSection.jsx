@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
-    <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-gray-950">
+    <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-slate-900">
       {/* Background gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary-900/30 rounded-full blur-3xl -z-10 opacity-70"></div>
-      <div className="absolute top-20 -right-20 w-96 h-96 bg-indigo-900/30 rounded-full blur-3xl -z-10 opacity-60"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary-900/40 rounded-full blur-3xl -z-10 opacity-70"></div>
+      <div className="absolute top-20 -right-20 w-96 h-96 bg-indigo-900/40 rounded-full blur-3xl -z-10 opacity-60"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
@@ -16,23 +16,23 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-primary-900/30 text-primary-300 text-sm font-semibold mb-6 border border-primary-500/30 shadow-sm backdrop-blur-sm">
+            <span className="inline-block py-1 px-3 rounded-full bg-primary-900/40 text-primary-200 text-sm font-semibold mb-6 border border-primary-500/40 shadow-sm backdrop-blur-sm">
               ✨ The New Standard in Travel
             </span>
           </motion.div>
           
           <motion.h1 
-            className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight"
+            className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight drop-shadow-md"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             Experience the world <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-indigo-400">without boundaries.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-indigo-300">without boundaries.</span>
           </motion.h1>
           
           <motion.p 
-            className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -47,7 +47,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <Link to="/login" className="w-full sm:w-auto bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-10 py-4 rounded-full font-bold transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] flex items-center justify-center group text-lg">
+            <Link to="/login" className="w-full sm:w-auto bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-10 py-4 rounded-full font-bold transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] flex items-center justify-center group text-lg">
               Start Exploring
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={24} />
             </Link>
@@ -57,7 +57,7 @@ const HeroSection = () => {
         {/* 7 Wonders Map Section */}
         <div className="mt-20 relative w-full flex justify-center">
           <motion.div 
-            className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-700/50 relative bg-gray-900 aspect-video"
+            className="w-full max-w-5xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-slate-700/50 relative bg-slate-800 aspect-video"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
