@@ -24,17 +24,17 @@ const Dashboard = () => {
   };
 
   const personalSelections = [
-    { id: 1, title: 'Mountain Escapes', image: 'https://picsum.photos/seed/mountain/500/500' },
-    { id: 2, title: 'Beach Resorts', image: 'https://picsum.photos/seed/beach/500/500' },
-    { id: 3, title: 'City Tours', image: 'https://picsum.photos/seed/city/500/500' },
-    { id: 4, title: 'Camping', image: 'https://picsum.photos/seed/camping/500/500' },
-    { id: 5, title: 'Road Trips', image: 'https://picsum.photos/seed/roadtrip/500/500' },
+    { id: 1, title: 'Mountain Escapes', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, title: 'Beach Resorts', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&auto=format&fit=crop&q=80' },
+    { id: 3, title: 'City Tours', image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=500&auto=format&fit=crop&q=80' },
+    { id: 4, title: 'Camping', image: 'https://images.unsplash.com/photo-1504280390224-69634e02927d?w=500&auto=format&fit=crop&q=80' },
+    { id: 5, title: 'Road Trips', image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=80' },
   ];
 
   const previousTrips = [
-    { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://picsum.photos/seed/kyoto/500/800' },
-    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://picsum.photos/seed/santorini/500/800' },
-    { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://picsum.photos/seed/alps/500/800' },
+    { id: 1, location: 'Kyoto, Japan', date: 'Oct 2024', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=80' },
+    { id: 2, location: 'Santorini, Greece', date: 'Jul 2024', image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac542?w=500&auto=format&fit=crop&q=80' },
+    { id: 3, location: 'Swiss Alps', date: 'Dec 2023', image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=500&auto=format&fit=crop&q=80' },
   ];
 
   return (
@@ -56,7 +56,7 @@ const Dashboard = () => {
           className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden mb-8 group shadow-2xl border border-gray-800"
         >
           <img 
-            src="https://picsum.photos/seed/travelbanner/1200/400" 
+            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
             alt="Banner" 
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
           />
