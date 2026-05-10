@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar } from 'lucide-react';
+import { Search, Filter, SortDesc, Grid, Plus, MapPin, Calendar, Home } from 'lucide-react';
 
 const Dashboard = () => {
 
@@ -45,9 +45,30 @@ const Dashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
+        {/* Dashboard Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-between items-center mb-6"
+        >
+          {/* Home button — left side */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-gray-400 hover:text-white bg-gray-900/60 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 px-4 py-2.5 rounded-xl transition-all group"
+          >
+            <Home className="w-5 h-5 text-primary-400 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium">Home</span>
+          </Link>
 
+          {/* Brand */}
+          <h1 className="text-xl font-bold tracking-wider text-white">Traveloop</h1>
 
-        {/* Banner Image */}
+          {/* Profile avatar — right side */}
+          <div className="w-10 h-10 rounded-full border-2 border-gray-700 bg-gray-800 overflow-hidden cursor-pointer hover:border-primary-500 transition-colors">
+            <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+          </div>
+        </motion.div>
+
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
