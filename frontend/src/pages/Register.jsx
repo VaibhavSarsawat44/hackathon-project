@@ -24,11 +24,14 @@ const Register = () => {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
     phone: '',
     city: '',
     country: '',
     additionalInfo: ''
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   const [focusedInput, setFocusedInput] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -57,9 +60,46 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = '/dashboard';
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const name = `${formData.firstName} ${formData.lastName}`.trim();
+      const payload = {
+        name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        city: formData.city,
+        country: formData.country,
+        additionalInfo: formData.additionalInfo,
+        profilePhoto: photo || ''
+      };
+
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        window.location.href = '/dashboard';
+      } else {
+        setError(data.message || 'Registration failed');
+      }
+    } catch (err) {
+      setError('An error occurred during registration. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Camera Functions
@@ -213,6 +253,7 @@ const Register = () => {
                   { name: 'firstName', placeholder: 'First Name', type: 'text' },
                   { name: 'lastName', placeholder: 'Last Name', type: 'text' },
                   { name: 'email', placeholder: 'Email Address', type: 'email' },
+                  { name: 'password', placeholder: 'Password', type: 'password' },
                   { name: 'phone', placeholder: 'Phone Number', type: 'tel' },
                   { name: 'city', placeholder: 'City', type: 'text' },
                   { name: 'country', placeholder: 'Country', type: 'text' },
@@ -252,14 +293,25 @@ const Register = () => {
                   />
                 </div>
               </div>
+
+              {error && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 text-red-500 text-sm text-center"
+                >
+                  {error}
+                </motion.p>
+              )}
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex justify-center w-full">
               <motion.button
                 type="submit"
+                disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-1/2 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all"
+                className="w-1/2 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {/* Shine effect on hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
