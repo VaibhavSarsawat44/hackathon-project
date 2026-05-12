@@ -8,7 +8,7 @@ const generateToken = require('../utils/generateToken');
 // ─────────────────────────────────────────
 const signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, city, country, additionalInfo } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Name, email and password are required' });
@@ -19,7 +19,7 @@ const signup = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'User with this email already exists' });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, phone, city, country, additionalInfo });
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -34,6 +34,10 @@ const signup = async (req, res, next) => {
           profilePhoto: user.profilePhoto,
           savedDestinations: user.savedDestinations,
           bio: user.bio,
+          phone: user.phone,
+          city: user.city,
+          country: user.country,
+          additionalInfo: user.additionalInfo,
           createdAt: user.createdAt,
         },
       },
@@ -75,6 +79,10 @@ const login = async (req, res, next) => {
           profilePhoto: user.profilePhoto,
           savedDestinations: user.savedDestinations,
           bio: user.bio,
+          phone: user.phone,
+          city: user.city,
+          country: user.country,
+          additionalInfo: user.additionalInfo,
           createdAt: user.createdAt,
         },
       },
@@ -105,11 +113,11 @@ const getMe = async (req, res, next) => {
 // ─────────────────────────────────────────
 const updateProfile = async (req, res, next) => {
   try {
-    const { name, bio, profilePhoto } = req.body;
+    const { name, bio, profilePhoto, phone, city, country, additionalInfo } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { name, bio, profilePhoto },
+      { name, bio, profilePhoto, phone, city, country, additionalInfo },
       { new: true, runValidators: true }
     );
 
