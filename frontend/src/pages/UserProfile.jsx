@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase, User, Lock, X } from 'lucide-react';
+import { Camera, Edit3, MapPin, Calendar, Mail, Phone, Globe, ArrowRight, Briefcase, User, Lock, X, Upload, Image as ImageIcon } from 'lucide-react';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -16,6 +16,58 @@ const UserProfile = () => {
   const [passForm, setPassForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passError, setPassError] = useState('');
   const [passSuccess, setPassSuccess] = useState('');
+
+  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
+    setIsCameraActive(false);
+  };
+
+  useEffect(() => {
+    if (!isPhotoModalOpen) stopCamera();
+  }, [isPhotoModalOpen]);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      setIsCameraActive(true);
+    } catch (err) {
+      alert("Could not access camera. Please check permissions.");
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      setEditForm({ ...editForm, profilePhoto: dataUrl });
+      stopCamera();
+      setIsPhotoModalOpen(false);
+    }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setEditForm({ ...editForm, profilePhoto: event.target.result });
+        setIsPhotoModalOpen(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -41,7 +93,8 @@ const UserProfile = () => {
             bio: data.data.user.bio || '',
             phone: data.data.user.phone || '',
             city: data.data.user.city || '',
-            country: data.data.user.country || ''
+            country: data.data.user.country || '',
+            profilePhoto: data.data.user.profilePhoto || ''
           });
         } else {
           localStorage.removeItem('token');
@@ -217,14 +270,17 @@ const UserProfile = () => {
                   whileHover={{ scale: 1.05 }}
                   className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-gray-700 overflow-hidden shadow-[0_0_30px_rgba(79,70,229,0.2)] group-hover:border-primary-500 transition-colors duration-300 flex items-center justify-center bg-gray-800"
                 >
-                  {userData.profilePhoto ? (
-                    <img src={userData.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                  {(isEditing && editForm.profilePhoto) || userData.profilePhoto ? (
+                    <img src={(isEditing && editForm.profilePhoto) || userData.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-16 h-16 md:w-20 md:h-20 text-gray-400" />
                   )}
                 </motion.div>
                 {isEditing && (
-                  <button className="absolute bottom-1 right-1 w-10 h-10 bg-primary-600 hover:bg-primary-500 rounded-full flex items-center justify-center border-4 border-gray-900 shadow-lg transition-colors">
+                  <button 
+                    onClick={() => setIsPhotoModalOpen(true)}
+                    className="absolute bottom-1 right-1 w-10 h-10 bg-primary-600 hover:bg-primary-500 rounded-full flex items-center justify-center border-4 border-gray-900 shadow-lg transition-colors"
+                  >
                     <Camera className="w-4 h-4 text-white" />
                   </button>
                 )}
@@ -439,6 +495,93 @@ const UserProfile = () => {
                   Update Password
                 </button>
               </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Photo Modal */}
+      <AnimatePresence>
+        {isPhotoModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-gray-900 border border-gray-700 rounded-3xl p-6 w-full max-w-sm flex flex-col items-center relative shadow-2xl"
+            >
+              <button 
+                onClick={() => setIsPhotoModalOpen(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h3 className="text-xl font-bold text-white mb-6">Profile Photo</h3>
+              
+              <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-800 border-4 border-gray-700 mb-6 relative flex items-center justify-center">
+                {isCameraActive ? (
+                  <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    playsInline 
+                    className="w-full h-full object-cover transform scale-x-[-1]"
+                  />
+                ) : editForm.profilePhoto || userData.profilePhoto ? (
+                  <img src={editForm.profilePhoto || userData.profilePhoto} alt="Current" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="w-16 h-16 text-gray-600" />
+                )}
+                <canvas ref={canvasRef} className="hidden" />
+              </div>
+
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
+
+              {isCameraActive ? (
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={capturePhoto}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Capture
+                  </button>
+                  <button 
+                    onClick={stopCamera}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-gray-700 hover:bg-gray-600 transition-colors flex items-center justify-center"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Upload className="w-5 h-5" />
+                    Upload
+                  </button>
+                  <button 
+                    onClick={startCamera}
+                    className="flex-1 py-3 px-4 rounded-xl font-medium text-white bg-gray-700 hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Camera
+                  </button>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
