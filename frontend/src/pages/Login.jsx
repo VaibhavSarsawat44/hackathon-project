@@ -22,6 +22,8 @@ const itemVariants = {
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -37,9 +39,34 @@ const Login = () => {
     setMousePosition({ x, y });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = '/dashboard';
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        window.location.href = '/dashboard';
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('An error occurred during login. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -168,13 +195,24 @@ const Login = () => {
               </div>
             </motion.div>
 
+            {error && (
+              <motion.p 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-500 text-sm text-center"
+              >
+                {error}
+              </motion.p>
+            )}
+
             {/* Login Button */}
             <motion.div variants={itemVariants} className="pt-4 flex justify-center w-full">
               <motion.button
                 type="submit"
+                disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-2/3 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all"
+                className="w-2/3 relative flex justify-center items-center py-4 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 overflow-hidden group/btn shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {/* Shine effect on hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
