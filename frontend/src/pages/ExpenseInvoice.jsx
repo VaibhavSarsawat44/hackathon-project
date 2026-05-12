@@ -60,10 +60,6 @@ const ExpenseInvoice = () => {
             <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 transition-all text-sm font-medium">
               <SortDesc className="w-4 h-4" /> Sort
             </button>
-            {/* Mock User Avatar */}
-            <div className="w-10 h-10 rounded-full border-2 border-gray-700 overflow-hidden ml-2">
-              <img src="https://i.pravatar.cc/150?img=11" alt="User" />
-            </div>
           </motion.div>
         </div>
 
