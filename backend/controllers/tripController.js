@@ -11,7 +11,33 @@ const Note = require('../models/Note');
 // ─────────────────────────────────────────
 const getTrips = async (req, res, next) => {
   try {
-    const trips = await Trip.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const { search, status, sortBy, order } = req.query;
+
+    const query = { user: req.user._id };
+
+    // Search filter: matches tripName or description (regex, case-insensitive)
+    if (search) {
+      query.$or = [
+        { tripName: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Status filter
+    if (status && status !== 'all') {
+      query.status = status;
+    }
+
+    // Sorting options
+    let sortOptions = {};
+    if (sortBy) {
+      const sortOrder = order === 'asc' ? 1 : -1;
+      sortOptions[sortBy] = sortOrder;
+    } else {
+      sortOptions['createdAt'] = -1; // Default: newest first
+    }
+
+    const trips = await Trip.find(query).sort(sortOptions);
 
     res.status(200).json({
       success: true,

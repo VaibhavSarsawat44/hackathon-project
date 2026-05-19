@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Search, Compass, Star, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Calendar, MapPin, Search, Compass, Star, ArrowRight, Loader } from 'lucide-react';
 
 const CreateTrip = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     place: '',
     startDate: '',
     endDate: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -16,6 +19,61 @@ const CreateTrip = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateTrip = async (e) => {
+    if (e) e.preventDefault();
+    if (!formData.place) {
+      setError('Please select or type a place name.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('You must be logged in to plan a trip. Redirecting to login...');
+        setTimeout(() => navigate('/login'), 2000);
+        return;
+      }
+
+      // Preselected beautiful Unsplash cover photos
+      const covers = [
+        'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=2035&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop'
+      ];
+      const randomCover = covers[Math.floor(Math.random() * covers.length)];
+
+      const res = await fetch('/api/trips', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          tripName: `Trip to ${formData.place}`,
+          description: `An amazing journey to explore ${formData.place}.`,
+          startDate: formData.startDate || undefined,
+          endDate: formData.endDate || undefined,
+          coverPhoto: randomCover,
+          status: formData.startDate && new Date(formData.startDate) > new Date() ? 'upcoming' : 'ongoing'
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        navigate(`/build-itinerary?tripId=${data.data.trip._id}`);
+      } else {
+        setError(data.message || 'Failed to create trip');
+      }
+    } catch (err) {
+      setError('Connection to backend failed. Please verify the server is running.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const containerVariants = {
@@ -72,7 +130,7 @@ const CreateTrip = () => {
               {/* Subtle hover glow inside the form container */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-              <form className="max-w-3xl space-y-8 relative z-10">
+              <form onSubmit={handleCreateTrip} className="max-w-3xl space-y-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   <label className="md:col-span-3 text-gray-300 font-medium text-lg flex items-center">
                     <MapPin className="w-5 h-5 mr-3 text-primary-400" /> Select a Place :
@@ -119,17 +177,27 @@ const CreateTrip = () => {
                   </div>
                 </div>
 
+                {error && (
+                  <p className="text-red-400 text-sm font-medium">{error}</p>
+                )}
+
                 <div className="flex justify-end pt-6">
                   <button 
-                    type="button" 
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center"
-                    onClick={() => {
-                      // Placeholder for filter logic
-                      console.log('Filters Applied:', formData);
-                    }}
+                    type="submit" 
+                    disabled={loading}
+                    className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Search className="w-5 h-5 mr-2" />
-                    Apply Filters
+                    {loading ? (
+                      <>
+                        <Loader className="w-5 h-5 mr-2 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-5 h-5 mr-2" />
+                        Create & Plan Trip
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
@@ -193,13 +261,15 @@ const CreateTrip = () => {
           transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
           className="fixed bottom-8 right-8 z-50"
         >
-          <Link 
-            to="/build-itinerary"
-            className="bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-8 py-4 rounded-full font-bold shadow-[0_10px_40px_rgba(79,70,229,0.5)] border border-white/10 flex items-center group transition-all transform hover:scale-105 active:scale-95"
+          <button 
+            type="button"
+            onClick={() => handleCreateTrip()}
+            disabled={loading}
+            className="bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white px-8 py-4 rounded-full font-bold shadow-[0_10px_40px_rgba(79,70,229,0.5)] border border-white/10 flex items-center group transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Build Itinerary
+            {loading ? 'Creating...' : 'Build Itinerary'}
             <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-2 duration-300" />
-          </Link>
+          </button>
         </motion.div>
 
         </motion.div>
